@@ -1,0 +1,87 @@
+#info_tab{
+    position: fixed;
+    top: 5rem;
+    right: 0;
+    overflow: auto;
+    height: 83vh;
+    max-width: 90vw;
+    width: 350px;
+    font-size: small;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-right: 0;
+    border: 1px solid rgba(35, 112, 255, 0.605);
+    border-radius: 10px;
+    display: none;
+    z-index: 50;
+}
+#info_tab_title{
+    font-size: x-large;
+}
+#info_tab_title:hover{
+    text-decoration: underline;
+}
+#info_tab_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#info_tab_table{
+    border-top: 1px solid rgba(35, 112, 255, 0.605);
+    padding-top: 5px;
+}
+.info_btn{
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    margin-top: 5px;
+    border: 1px solid rgba(35, 112, 255, 0.605);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(94, 94, 94, 0.1);
+}
+.info_btn:hover{
+    background-color: rgba(94, 94, 94, 0.505);
+    cursor: pointer;
+}
+#loading{
+    display: none;
+    text-align: center;
+}
+.infobox-header{
+    background-color: #5b5b5b !important;
+}
+.infobox-below{
+    background-color: #5b5b5b !important;
+}
+.infobox-above{
+    background-color: #5b5b5b !important;
+}
+
+.fancy_scroll {
+    height: 300px;
+    width: 50%;
+    overflow: auto;
+    padding: 0 10px;
+}
+#info_tab::-webkit-scrollbar {
+    width: 10px;
+}
+#info_tab::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+#info_tab::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgb(35, 112, 255);
+}
+
+
+/* --------------MEDIA ONLY------------------ */
+@media only screen and (max-width: 500px){
+    #info_tab{
+        height: 75vh;
+    }
+}

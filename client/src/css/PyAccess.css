@@ -1,0 +1,287 @@
+@font-face {
+font-family: FreedomFont;
+src: url("..\\public\\FreedomFont.ttf");
+}
+@font-face {
+font-family: AstroSpace;
+src: url("..\\public\\AstroSpace.ttf");
+}
+@font-face {
+font-family: MayaCulpa;
+src: url("..\\public\\MayaCulpa.ttf");
+}
+.uns{
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to { 
+        transform: rotate(360deg);
+    }
+}
+ 
+
+ @-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to { 
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.load {
+	width: 100px;
+	height: 100px;
+	/*margin: 110px auto 0;*/
+	border:solid 10px #8822aa;
+	border-radius: 50% !important;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	-webkit-transition: all 0.5s ease-in;
+    -webkit-animation-name:             rotate; 
+    -webkit-animation-duration:         1.0s; 
+    -webkit-animation-iteration-count:  infinite;
+    -webkit-animation-timing-function: linear;
+    transition: all 0.5s ease-in;
+    animation-name:             rotate; 
+    animation-duration:         1.0s; 
+    animation-iteration-count:  infinite;
+    animation-timing-function: linear; 
+    z-index: 2;
+}
+.PythonAccess.hidden{
+    display: none;
+    position: none;
+}
+.PyAccess-radio{
+    appearance: none;
+    position: absolute;
+}
+.PyAccess-opt{
+    padding: 7px;
+    text-align: center;
+    border: inherit;
+}
+#PyAccess-form{
+    display:flex; 
+    flex-direction:column; 
+    background-color: rgb(30, 60, 131, 0.6);
+    border: 00.25px solid rgb(35, 112, 255, 0.8);
+    border-radius: 2px;
+    min-width: 300px;
+    filter: drop-shadow(0 0 4px black);
+}
+.PyAccess-opt>input[type="radio"]:checked+div>div{
+    border-radius: 5px;
+    color: rgb(161, 224, 255);
+}
+.PyAccess-opt>input[type="radio"]:checked+div{
+    background-color: rgb(30, 60, 110, 0.4);
+    border: 00.5px double rgba(2, 55, 152, 0.8);
+    border-radius: 2px;
+}
+.PyAccess-opt>input[type="radio"]:hover+div{
+    background-color: rgb(30, 60, 148, 0.4);
+}
+.PyAccess-opt>input[type='radio']:hover+div>div{
+    color: rgb(143, 210, 255);  
+}
+.srch-d{
+    display: unset;
+    padding: inherit;
+    border: solid 1px transparent;
+    width: -webkit-fill-available;
+    color: rgb(20, 189, 236);
+}
+.srch-d2{
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+    border: solid 1px transparent;
+}
+.PyAccess-btn{
+    all: unset;
+    color: rgb(211, 245, 255);
+    font-weight: bold;
+    font-size: large;
+    padding: 10px;
+    padding-left: 3.8rem;
+    padding-right: 3.8rem;
+    border-radius: 10px;
+    border: 1px solid   rgb(35, 112, 255, 0.8);
+    background-color: rgb(30, 60, 125, 0.3);
+    text-align: center;
+    transition: 0.2s all;
+}
+.PyAccess-btn:hover{
+    background-color: rgba(5, 20, 92, 0.3);
+    color: rgb(160, 217, 255);
+    border: 1px solid   rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+.PythonAccess.show{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    -moz-transform: translate(-50%, -50%); /* Firefox */
+    -ms-transform: translate(-50%, -50%);  /* IE 9 */
+    -webkit-transform: translate(-50%, -50%); /* Safari and Chrome*/
+    -o-transform: translate(-50%, -50%); /* Opera */
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    width: 82%;
+    height: 75%;
+    max-width: 800px;
+    max-height: 800px;
+    border: 00.25px solid rgb(35, 112, 255, 0.8);
+    border-radius: 11px;
+    background-color: rgba(0, 20, 55, 0.85);
+    background-image: linear-gradient(to right, rgba(0, 40, 90, 0.7), rgba(0, 20, 55, 0.9), rgba(0, 73, 82, 0.4));
+    filter:  drop-shadow(0 0 200px black);
+    z-index: 100;
+}
+#PyAccess-title{
+    text-align: center;
+    color: rgb(201, 242, 255);
+}
+.PyAccessForm{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#PyAccess-close{
+    margin: 0 0;
+    position: inherit;
+    right: 0;
+}
+#PyAccess-close-btn{
+    padding: 5px 10px;
+    margin: 3px;
+}
+#PyAccess-validate{
+    display: none;
+    position: absolute;
+    font-size: larger;
+    text-align: center;
+    /*margin-top: 2.5rem;*/
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 14px;
+    background-image: radial-gradient(#01001173, #00000038, transparent);
+    color: rgb(200 169 169);
+    transition: 0.1s all;
+    margin-right: 40px;
+}
+
+/* --------------MEDIA ONLY------------------ */
+
+@media only screen and (max-width: 600px){
+    .PythonAccess.show{
+        min-width: 98vw;
+        max-height: 70vh;
+    }
+    /*#PyAccess-form{
+        min-width: 90vw;
+    }*/
+    #PyAccess-validate{
+        font-size: 0.7em !important;
+    }
+}
+@media only screen and (max-height: 530px){
+    #PyAccess-validate{
+        display: none;
+    }
+    #PyAccess-form{
+        font-size: 0.7em !important;
+    }
+    #PyAccess-form>#PyAccess-title>h3{
+        margin: 5px;
+    }
+    .PythonAccess.show{
+        height: 70vh;
+    }
+    .srch-d2{
+        padding: 2px;;
+    }
+    #btn-opt>.PyAccess-btn{
+        font-size: 0.8em !important;
+        padding: 5px;
+        padding-left: 2.8rem;
+        padding-right: 2.8rem;
+    }
+    .PyAccess-opt{
+        padding: 0px;
+    }
+}
+@media only screen and (max-height: 700px){
+    .PyAccessForm{
+        align-items: flex-end !important;
+    }
+    #PyAccess-form{
+        margin-bottom: 1rem;
+        font-size: 0.85em;
+    }
+    .PyAccess-btn{
+        font-size: medium;
+    }
+    .PyAccess-opt{
+        padding: 2px;
+    }
+}
+@media only screen and (min-width: 600px){
+    #PyAccess-validate{
+        font-size: larger !important;
+    }
+}
+@media only screen and (min-width: 768px){
+
+}
+@media only screen and (max-width: 1300px){
+    .PythonAccess.show{
+        max-width: 700px;
+    }
+}
+@media only screen and (min-width: 1300px){
+    .PyAccessForm{
+        font-size: 1.1em;
+    }
+    .PyAccess-btn{
+        font-size: 1.1em;
+    }
+    .PythonAccess.show{
+        width: 85%;
+        height: 80%;
+    }
+}
+@media only screen and (min-width: 1920px){
+    #PyAccess-close-btn{
+        padding: 8px 13px;
+    }
+    .PyAccessForm{
+        font-size: 1.5em;
+    }
+    #PyAccess-form{
+        width: 20vw;
+    }
+    .PyAccess-btn{
+        font-size: 1.25em;
+    }
+    .PythonAccess.show{
+        max-width: 70%;
+        max-height: 80%;
+    }
+    #PyAccess-validate{
+        font-size: xx-large !important;
+        margin-top: 7rem;
+    }
+}

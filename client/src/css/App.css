@@ -1,0 +1,98 @@
+@font-face {
+  font-family: FreedomFont;
+  src: url("..\\public\\FreedomFont.ttf");
+}
+@font-face {
+  font-family: AstroSpace;
+  src: url("..\\public\\AstroSpace.ttf");
+}
+@font-face {
+  font-family: MayaCulpa;
+  src: url("..\\public\\MayaCulpa.ttf");
+}
+
+h2{
+  font-size: 1.4em;
+  margin-bottom: 0;
+  cursor: default;
+}
+.App{
+  position: relative;
+  text-align: center;
+  overflow: auto;
+  height: 100vh;
+  width: 100vw;
+  /* Hide scrollbar */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  scroll-behavior: smooth;
+}
+.App::-webkit-scrollbar {
+  display: none; /* Chrome and rest */
+}
+.root{
+  overflow: auto;
+  height: 100vh;
+}
+body{
+  background: url("..\\public\\5040007.jpg");
+  color:rgb(215, 233, 250);
+  background-size: cover;
+  font-family: AstroSpace;
+  background-position: center top;
+  background-repeat: no-repeat;
+  /* Hide scrollbar */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+body::-webkit-scrollbar {
+  display: none; /* Chrome and rest */
+}
+ul{
+  list-style-type: none;
+  text-align: -webkit-center;
+  padding-left: 0;
+}
+li{
+  background-color: rgba(0, 0, 0, 0.247);
+  padding: 5px;
+  max-width: 30rem;
+  min-width: none;
+  border-radius: 25px;
+  border: 1px solid steelblue;
+  margin-bottom: 2px;
+}
+li:hover{
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgb(199, 225, 250);
+}
+li:hover > #p_info{
+  color: #ffffff;
+}
+#list{
+  margin-bottom: 32px;
+}
+#p_info{
+  text-align: end;
+  margin: 0;
+  font-size: 10px;
+  color: #ffffff00;
+  margin-right: 3px;
+  cursor: default;
+  transition: 0.5s all;
+}
+
+
+/* --------------MEDIA ONLY------------------ */
+
+@media only screen and (min-width: 1200px){
+  li{
+    max-width: 40vw;
+  }
+}
+@media only screen and (min-width: 1920px){
+  li{
+    max-width: 40vw;
+    font-size: 1.3em;
+  }
+}

@@ -1,0 +1,18 @@
+#page_up_down{
+    position: fixed;
+    left: 2px;
+    background-color: #0000ff15;
+    border: 1px solid rgb(35, 112, 255, 0.6);
+    border-radius: 30px;
+    height: 40px;
+    width: 40px;
+}
+#page_up_down:hover{
+    border: 1px solid rgb(35, 112, 255, 0.8);
+    background-color: #0000ff42;
+    cursor: pointer;
+}
+.arrow{
+    height: 40px;
+    width: 40px;
+}
