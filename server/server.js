@@ -5,6 +5,7 @@ require('dotenv').config();
 const router = express.Router();
 const path = require('path');
 const { MongoClient, ServerApiVersion, Timestamp } = require('mongodb');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 const uri = process.env.URI_DATABASE;
 const port = process.env.PORT || 8080;
 const client = new MongoClient(uri, {
@@ -15,7 +16,21 @@ const client = new MongoClient(uri, {
     }
 });
 const db = client.db("offerData");
+const rateLimiter = new RateLimiterMemory({
+  points: 30,
+  duration: 1
+});
 
+const rateLimiterMiddleware = (req, res, next) => {
+  rateLimiter.consume(req.ip)
+     .then(() => {
+         next();
+     })
+     .catch(() => {
+         res.status(429).send('Too Many Requests');
+     });
+};
+app.use(rateLimiterMiddleware);
 app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

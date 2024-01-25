@@ -6,8 +6,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from collections import defaultdict
 from dotenv import load_dotenv
-import time
-import re
 import sys
 import os
 from pymongo.mongo_client import MongoClient
@@ -45,76 +43,15 @@ prefs = {"profile.default_content_setting_values.geolocation" :2}
 options.add_experimental_option("prefs",prefs)
 browser = webdriver.Chrome(options=options)
 errors = [NoSuchElementException, ElementNotInteractableException]
-wait = WebDriverWait(browser, timeout=2, poll_frequency=.2, ignored_exceptions=errors)
-
-"///---------------USE WAIT INSTEAD----------------///"
-time.sleep(3)
+wait = WebDriverWait(browser, timeout=10, poll_frequency=.5, ignored_exceptions=errors)
 
 "---------------GLOBAL VARIABLES-------------------"
 idArr = defaultdict(list)
-offerNameArr= defaultdict(list)
-placementArr = defaultdict(list)
-positionArr = defaultdict(list)
 technologiesArr = defaultdict(list)
-linkArr = defaultdict(list)
-salaryArr = defaultdict(list)
-"Some of dict's are here for future improvement"
 technologiesCount = defaultdict(int)
-newDict = defaultdict(list)
-
-
 
 "--------------SEARCH FUNCTIONS----------------"
 
-def lookForTechnologies(id, index, arr):
-    result = browser.find_elements(By.XPATH, f"//*/div[@data-test-offerid='{id}']//*//span[@data-test='technologies-item']")
-    for e in result:
-        data = e.get_attribute("innerHTML")
-        arr[index].append(data)
-        print(data)
-    if not result:
-        arr[index].append('not given')
-        print('No Technologies found\n')
-    else:
-        print('Technologies added succesfully\n')
-
-def pop(index):
-    idArr.pop(index)
-    offerNameArr.pop(index)
-    positionArr.pop(index)
-    placementArr.pop(index)
-    linkArr.pop(index)
-    technologiesArr.pop(index)
-    salaryArr.pop(index)
-
-
-"---------------VALIDATING FUNCTIONS---------------"
-
-def sortByPosition():
-    if position == 'gamedev':
-        return
-    for i in range(0, len(positionArr)):
-        if "Mid" in positionArr[i][0]:
-            pop(i)
-
-def validateSalaries():
-    for k, v in salaryArr.items():
-        for e in v:
-            if e != 'not given':
-                new = re.sub(r'&nbsp;|/.*', "", e)
-                newDict[k].append(new)
-            else:
-                newDict[k].append('not given')
-
-" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ "
-
-def count(techArr, techCount):
-    for k, v in techArr.items():
-        for e in v:
-            techCount[e] += 1
-    print(techCount)
-
-"---------------EXECUTION----------------"
 def browser_setting(spec):
     browser.get("https://pracuj.pl/")
     browser.add_cookie(cookie3)
@@ -123,24 +60,30 @@ def browser_setting(spec):
     browser.get(url_arg)
     browser.add_cookie(cookie1)
     browser.add_cookie(cookie2)
-    time.sleep(1)
     browser.refresh()
-    time.sleep(3)
 
 def main(techArr, IDArr):
     try:
         offersArr = browser.find_elements(By.XPATH, '//*//div[@data-test="default-offer"]')
         for i, e in enumerate(offersArr):
             att = e.get_attribute("data-test-offerid")
-            print('------------')
+            print('------------\n')
             IDArr[i].append(att)
             print(f'ID: {att} added succesfully\n')
             lookForTechnologies(att, i, techArr)
-            """
-            lookForLink(att, i)
-            """
     except NoSuchElementException:
         pass
+
+def lookForTechnologies(id, index, arr):
+    result = browser.find_elements(By.XPATH, f"//*/div[@data-test-offerid='{id}']//*//span[@data-test='technologies-item']")
+    for e in result:
+        data = e.get_attribute("innerHTML")
+        arr[index].append(data)
+    if not result:
+        arr[index].append('not given')
+        print('No Technologies found\n')
+    else:
+        print('Technologies added succesfully\n')
 
 flag = False
 "This flag controls for loop's behaviour, checks whether ID or TECH already exists in array"
@@ -156,6 +99,11 @@ def add_new_id(IDArr, techArr):
         if flag == False:
             db.IDs.insert_one({"ID": id[0]})
 
+def count(techArr, techCount):
+    for k, v in techArr.items():
+        for e in v:
+            techCount[e] += 1
+    print(techCount)
 
 def addTechs(spec, techCount):
     for k, v in techCount.items():
@@ -175,7 +123,7 @@ def addTechs(spec, techCount):
         if flag == False:
             db[spec].insert_one({"name": k, "value": v})
 
-
+"---------------EXECUTION----------------"
 
 if url_flag == False:
     for v in url:
@@ -190,7 +138,7 @@ if url_flag == False:
         addTechs("langsCount", techCount)
         addTechs(v, techCount)
         browser.get(f'http://localhost:8080/set_upd_time/{v}')
-    time.sleep(1)
+    wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
     exit()
 else:
     browser_setting(position)
@@ -200,5 +148,5 @@ else:
     addTechs("langsCount", technologiesCount)
     addTechs(position, technologiesCount)
     browser.get(f'http://localhost:8080/set_upd_time/{position}')   
-    time.sleep(1)
+    wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
     exit()

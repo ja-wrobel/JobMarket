@@ -39,7 +39,7 @@ function TechInfo(){
             .then(async data=>{
                 if(!data){
                     flag = false;
-                    return;
+                    return console.log('Something went wrong...');
                 }
                 name = await validateString(name);
                 loading_animation.className = '';
@@ -63,7 +63,6 @@ function TechInfo(){
     useEffect(()=>{
         if(!flag){
             fetchData();
-            console.log(name);
         }
     }, [name]);
     return (

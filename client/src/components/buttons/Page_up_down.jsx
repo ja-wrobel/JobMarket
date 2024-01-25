@@ -22,7 +22,6 @@ export default function Page_up_down(){
         const updateScrollPosition = ()=>{
             app_height = (app.scrollHeight-600);
             scroll_position = app.scrollTop;
-            console.log(scroll_position);
             if(scroll_position > app_height/2) setIsDirectionUp(true);
             else setIsDirectionUp(false);
         }

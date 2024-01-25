@@ -7,7 +7,7 @@ export default function FooterText(props){
     useEffect(()=>{
         const footer_height = document.getElementById('footerText').offsetHeight;
         const this_component = document.getElementById('page_up_down');
-        this_component.style.bottom = `${(footer_height+4)}px`;
+        this_component.style.bottom = `${(footer_height+5)}px`;
         if(boolArr.backend === false || boolArr.frontend === false || boolArr.fullstack === false || boolArr.gamedev === false){
             exp.root2.render(
                 <React.StrictMode>
