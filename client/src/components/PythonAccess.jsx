@@ -44,7 +44,7 @@ function PythonAccess(props){
         })
         .then((response) => {
             if(!response.ok){
-                warning.innerHTML = "Something went wrong... (HTTP Error: 404)";
+                warning.innerHTML = `Something went wrong... (HTTP Error: ${response.status===429 ? '429) - Too Many Requests - try again in one hour' : `${response.status})`}`;
                 warning.className = '';
                 mask.style.display = 'none';
                 return;
@@ -57,6 +57,9 @@ function PythonAccess(props){
             }
         })
         .catch(e => {
+            warning.innerHTML = `Something went wrong... (HTTP Error: ${e})`;
+            warning.className = '';
+            mask.style.display = 'none';
             return console.log(e);
         });
     }

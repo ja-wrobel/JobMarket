@@ -61,7 +61,7 @@ function Footer(){
       const bool_obj = {};
       for(let type of types){
         const data = await fetchData(type);
-        const [final_date_checked, this_type_bool_obj] = await processDate(data[0], bool_obj);
+        const [final_date_checked, this_type_bool_obj] = await processDate(data, bool_obj);
         setContent(final_date_checked);
         if(this_type_bool_obj[type] === false){
           setIsUpdated(false);

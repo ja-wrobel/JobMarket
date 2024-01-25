@@ -56,10 +56,6 @@ function TechInfo(){
                 setInfo(data);
             });
     }
-    const closeInfo = () => {
-        const div = document.getElementById('info_tab');
-        div.style.display = 'none';
-    }
     useEffect(()=>{
         if(!flag){
             fetchData();
@@ -68,7 +64,6 @@ function TechInfo(){
     return (
         <>
         <div>
-            <div className="info_btn" onClick={closeInfo}>X</div>
             <div id="info_tab_title"><a dangerouslySetInnerHTML={{__html: name}} href={info.href} target="_blank"></a></div>
             <div id="info_tab_content">
                 <div id="loading"></div>

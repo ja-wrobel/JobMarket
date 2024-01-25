@@ -1,6 +1,6 @@
 const py = require('python-shell');
 
-async function searchForOffers(position, response){
+async function searchForOffers(position, response, req_ip, db){
     let wasItUpdated= false; // Flag validates whether given position was already updated (in case something on client-side went wrong)
     try{
         if(position === undefined){
@@ -21,7 +21,7 @@ async function searchForOffers(position, response){
             return resp.json();
           })
           .then(data => {
-            if(data[0].date !== undefined){
+            if(data.date !== undefined){
               wasItUpdated = true;
               return response.status(404).end();
             }
@@ -39,13 +39,28 @@ async function searchForOffers(position, response){
         args: [position] //sys.argv[1]
     };
     try{
+      await db.connect();
+      const find_ip = await db.db("offerData").collection('searchCount').find({"meta._ip": req_ip}).toArray();
+      let search_count_status = find_ip[0].meta.search_count;
+      if(search_count_status >= 4){
+        console.log(`This client ${req_ip} sent too many requests...`);
+        return await response.status(429).end("Too Many Requests");
+      }
       if(wasItUpdated === false){
-        await py.PythonShell.run('webscraper.py', options).then(messages=>{
-            console.log(messages.toString());
-        });
+        try{
+          search_count_status += 1;
+          const add_to_count = db.db("offerData").collection('searchCount').updateMany({"meta._ip": req_ip},{"$set": {"meta.search_count": search_count_status}});
+          return await add_to_count;
+        }catch(e){
+          console.log(e);
+        }finally{
+          await py.PythonShell.run('webscraper.py', options).then(messages=>{
+              console.log(messages.toString());
+          });
+        }
       }else{
-        console.log(`Something went wrong on client side, because this position (${position}) was already updated...`);
-        return;
+        console.log(`This position (${position}) was already updated`);
+        return await response.status(404).end("This position was already updated");
       }
     }catch(e){
       console.log(e);

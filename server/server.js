@@ -17,18 +17,18 @@ const client = new MongoClient(uri, {
 });
 const db = client.db("offerData");
 const rateLimiter = new RateLimiterMemory({
-  points: 30,
-  duration: 1
+  points: 41,
+  duration: 1 
 });
 
 const rateLimiterMiddleware = (req, res, next) => {
   rateLimiter.consume(req.ip)
-     .then(() => {
-         next();
-     })
-     .catch(() => {
-         res.status(429).send('Too Many Requests');
-     });
+    .then(() => {
+      next();
+    })
+    .catch(() => {
+      res.status(429).send('Too Many Requests');
+    });
 };
 app.use(rateLimiterMiddleware);
 app.use(cors({origin: true, credentials: true}));
@@ -51,17 +51,23 @@ router.get('/', async (req, res)=>{
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // -->
   res.header("Access-Control-Allow-Headers", "x-access-token, Origin, X-Requested-With, Content-Type, Accept"); //it's weird but it did help <--
   try{
+    await client.connect();
+    let date = new Date();
+    let find_ip = await db.collection('searchCount').find({"meta._ip": req.ip}).toArray();
+    if(find_ip.length < 1){
+      let push_ip = db.collection('searchCount').insertOne({"date": date, meta:{"_ip": req.ip, "search_count": 0}});
+      return push_ip;
+    }
+  }catch(e){
+    console.log(e);
+  }
+  finally{
     try{
-      await client.connect();
       let display = await db.collection('langsCount').find({}).toArray();
       display.sort((a,b) => a.value - b.value);
       display.reverse();
       res.status(200).send(display);
-    }catch(e){
-      console.log(e);
-    }
-  }catch(e){
-    console.log(e);
+    }catch(e){console.log(e);}
   }
 })
 
@@ -90,7 +96,6 @@ router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specifie
 
 
 router.get('/upd_time/:key', async(req, res)=>{
-  let lastUpdateTime;
   let updateTimeData;
   try{
     try{
@@ -101,14 +106,13 @@ router.get('/upd_time/:key', async(req, res)=>{
 
       updateTimeData = await db.collection('lastUpdateTime').find({type: req.params.key}).toArray();
       if(updateTimeData.length < 1){
-        updateTimeData.push({
+        updateTimeData = {
           _id: ObjectId(),
           type: req.params.key
-        });
+        };
         res.send(updateTimeData);
       }else{
-        lastUpdateTime = await db.collection('lastUpdateTime').find({_id: updateTimeData.length, type: req.params.key}).toArray();
-        res.send(lastUpdateTime);
+        res.send(updateTimeData[(updateTimeData.length-1)]);
       }
     }catch(e){
       console.log(e);
@@ -142,9 +146,15 @@ router.get('/set_upd_time/:key', async (req, res)=>{
 const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
 
 router.post('/search_for_off', express.json(), async (req, res)=>{
-  console.log('Searching for new offers in progress(...)');
-  await searchForOffers(req.body.specs, res);
-  console.log('Search is finished, user redirected!');
+  rateLimiter.consume(req.ip, 20)
+    .then(async ()=>{
+      console.log('Searching for new offers in progress(...) for ip: '+req.ip);
+      await searchForOffers(req.body.specs, res, req.ip, client);
+      console.log('Search is finished, user redirected!');
+    })
+    .catch(()=>{
+      res.status(429).send('Too Many Requests');
+    });
 });
 
 
@@ -154,7 +164,13 @@ router.post('/search_for_off', express.json(), async (req, res)=>{
 const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
 
 router.get('/more_info/:key', async(req, res)=>{
-  await scrapeWikipedia(req.params.key, res);
+  rateLimiter.consume(req.ip, 15)
+    .then(async ()=>{
+      await scrapeWikipedia(req.params.key, res);
+    })
+    .catch(()=>{
+      res.status(429).send('Too Many Requests');
+    })
 });
 
 
