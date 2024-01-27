@@ -36,10 +36,9 @@ const rateLimiterMiddleware = (req, res, next) => {
     });
 };
 app.use(rateLimiterMiddleware);
-whitelist = [env_var.client_url, env_var.this_url+":"+env_var.port, undefined];
+whitelist = [env_var.client_url];
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin);
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
@@ -56,6 +55,7 @@ app.use('/', router);
 
 app.listen(env_var.port, async ()=>{
   console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
+  console.log(new Date());
 })
 
 
@@ -161,7 +161,6 @@ router.post('/search_for_off', express.json(), async (req, res)=>{
     .then(async ()=>{
       console.log('Searching for new offers in progress(...) for ip: '+req.ip);
       await searchForOffers(req.body.specs, res, req.ip, client);
-      console.log('Search is finished, user redirected!');
     })
     .catch(()=>{
       res.status(429).send('Too Many Requests');

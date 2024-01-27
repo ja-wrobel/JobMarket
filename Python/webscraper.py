@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from collections import defaultdict
 from dotenv import load_dotenv
+import datetime
 import sys
 import os
 from pymongo.mongo_client import MongoClient
@@ -29,11 +30,7 @@ cookie3 = {'name' : "gp_ab__basket__185", 'value' : "A"}
 position = sys.argv[1]
 if position == "all":
     url_flag = False
-    url = []
-    url.append('backend')
-    url.append('frontend')
-    url.append('fullstack')
-    url.append('gamedev')
+    specs_arr = ['backend', 'frontend', 'fullstack', 'gamedev']
 else:
     url_flag = True
     url = f'https://it.pracuj.pl/praca?et=17%2C1&its={position}'
@@ -127,7 +124,7 @@ def addTechs(spec, techCount):
 "---------------EXECUTION----------------"
 
 if url_flag == False:
-    for v in url:
+    for v in specs_arr:
         flag = True
         browser_setting(v)
         techArr = defaultdict(list)
@@ -138,8 +135,8 @@ if url_flag == False:
         count(techArr, techCount)
         addTechs("langsCount", techCount)
         addTechs(v, techCount)
-        browser.get(f'{server_url}:{server_port}/set_upd_time/{v}')
-    wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
+        length = len(db.lastUpdateTime.find({"type": v}).distinct("_id"))
+        db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": v})
     exit()
 else:
     browser_setting(position)
@@ -148,6 +145,6 @@ else:
     count(technologiesArr, technologiesCount)
     addTechs("langsCount", technologiesCount)
     addTechs(position, technologiesCount)
-    browser.get(f'{server_url}:{server_port}/set_upd_time/{position}')   
-    wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
+    length = len(db.lastUpdateTime.find({"type": position}).distinct("_id"))
+    db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": position})
     exit()
