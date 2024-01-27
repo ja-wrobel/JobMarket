@@ -37,7 +37,6 @@ function Footer(){
             let vDate = `Updated at:  ${oldestDate.year}-${oldestDate.month}-${oldestDate.day}  ${oldestDate.hour}:${oldestDate.minute}:${oldestDate.second}  `;
             return [vDate, boolObj];
           }else{
-            correctDate(oldestDate);
             let vDate = `Updated at:  ${oldestDate.year}-${oldestDate.month}-${oldestDate.day}  ${oldestDate.hour}:${oldestDate.minute}:${oldestDate.second}  `;
             return [vDate, boolObj];
           }
