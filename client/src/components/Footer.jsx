@@ -4,6 +4,7 @@ import "../css/App.css";
 import "../css/Footer.css";
 import '../index.css';
 import FooterText from "./FooterText.jsx";
+import correctDate from "../hooks/correctDate.js";
 const port = import.meta.env.VITE_SERVER_PORT || 8080;
 const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 const types = ['backend', 'frontend', 'fullstack', 'gamedev'];
@@ -32,9 +33,11 @@ function Footer(){
           let oldest_DHMS = oldestDate.day*86400 + oldestDate.hour*3600 + oldestDate.minute*60 + oldestDate.second; 
           if(DHMS < oldest_DHMS){
             oldestDate = formatedDate;
+            correctDate(oldestDate);
             let vDate = `Updated at:  ${oldestDate.year}-${oldestDate.month}-${oldestDate.day}  ${oldestDate.hour}:${oldestDate.minute}:${oldestDate.second}  `;
             return [vDate, boolObj];
           }else{
+            correctDate(oldestDate);
             let vDate = `Updated at:  ${oldestDate.year}-${oldestDate.month}-${oldestDate.day}  ${oldestDate.hour}:${oldestDate.minute}:${oldestDate.second}  `;
             return [vDate, boolObj];
           }

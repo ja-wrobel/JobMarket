@@ -1,4 +1,6 @@
 const py = require('python-shell');
+const py_path = process.env.PYTHON_PATH;
+const py_script = process.env.PYTHON_SCRIPT_PATH;
 
 async function searchForOffers(position, response, req_ip, db){
     let wasItUpdated= false; // Flag validates whether given position was already updated (in case something on client-side went wrong)
@@ -23,9 +25,9 @@ async function searchForOffers(position, response, req_ip, db){
     };
     let options = {
         mode: 'text',
-        pythonPath: 'C:/Python39/python.exe',
+        pythonPath: py_path,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: 'D://Work/NodeJS/JobMarket/Python/',
+        scriptPath: py_script,
         args: [position] //sys.argv[1]
     };
     try{

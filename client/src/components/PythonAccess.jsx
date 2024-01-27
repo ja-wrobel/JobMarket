@@ -54,7 +54,7 @@ function PythonAccess(props){
                 warning.className = '';
                 warning.style.display = 'none';
                 mask.style.display = 'none';
-                return console.log(response);
+                return window.location.reload();
             }
         })
         .catch(e => {
