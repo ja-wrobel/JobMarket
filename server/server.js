@@ -36,7 +36,17 @@ const rateLimiterMiddleware = (req, res, next) => {
     });
 };
 app.use(rateLimiterMiddleware);
-app.use(cors({origin: env_var.client_url, credentials: true}));
+whitelist = [env_var.client_url];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
