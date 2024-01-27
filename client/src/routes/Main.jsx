@@ -3,18 +3,18 @@ import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 const special_chars = ["#", "?", "/", ":", ";", "=", "@", ","];
 const corrected_chars = ["%23", "%22", "%2F", "%3A", "%3B", "%3D", "%40", "%2C"];
-const port = import.meta.env.SERVER_PORT || 8080;
+const port = import.meta.env.VITE_SERVER_PORT || 8080;
+const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 
 export default function Main(){
     const [allLangs, setAllLangs] = useState([]);
     const navigate = useNavigate();
     const fetchData = ()=>{
-      fetch(`http://localhost:${port}/`, {
+      fetch(`${uri}:${port}/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        mode: 'cors',
       })
         .then(response => {
           return response.json()

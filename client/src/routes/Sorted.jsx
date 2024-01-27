@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-const port = import.meta.env.SERVER_PORT || 8080;
+const port = import.meta.env.VITE_SERVER_PORT || 8080;
+const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 const special_chars = ["#", "?", "/", ":", ";", "=", "@", ","];
 const corrected_chars = ["%23", "%22", "%2F", "%3A", "%3B", "%3D", "%40", "%2C"];
 
@@ -11,7 +12,7 @@ export default function Sorted(){
     const {spec} = useParams();
     const navigate = useNavigate();
     const fetchData = async ()=>{
-        fetch(`http://localhost:${port}/specs/${spec}`, {
+        fetch(`${uri}:${port}/specs/${spec}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

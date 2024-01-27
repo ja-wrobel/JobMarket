@@ -4,11 +4,16 @@ const app = express();
 require('dotenv').config();
 const router = express.Router();
 const path = require('path');
+const helmet = require('helmet');
 const { MongoClient, ServerApiVersion, Timestamp } = require('mongodb');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
-const uri = process.env.URI_DATABASE;
-const port = process.env.PORT || 8080;
-const client = new MongoClient(uri, {
+const env_var = {
+  db_uri: process.env.URI_DATABASE,
+  port: process.env.PORT || 8080,
+  this_url: process.env.URL || "http://localhost",
+  client_url: process.env.CLIENT_URL
+}
+const client = new MongoClient(env_var.db_uri, {
     serverApi: {
       version: ServerApiVersion.v1,
       strict: true,
@@ -31,14 +36,15 @@ const rateLimiterMiddleware = (req, res, next) => {
     });
 };
 app.use(rateLimiterMiddleware);
-app.use(cors({origin: true, credentials: true}));
+app.use(cors({origin: env_var.client_url, credentials: true}));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
 
-app.listen(port, async ()=>{
-  console.log(`Server is running at http://localhost:${port}`);
+app.listen(env_var.port, async ()=>{
+  console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
 })
 
 
@@ -47,9 +53,6 @@ app.listen(port, async ()=>{
 
 
 router.get('/', async (req, res)=>{
-  res.header( "Access-Control-Allow-Origin", "*" ); // -->
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // -->
-  res.header("Access-Control-Allow-Headers", "x-access-token, Origin, X-Requested-With, Content-Type, Accept"); //it's weird but it did help <--
   try{
     await client.connect();
     let date = new Date();
@@ -72,9 +75,6 @@ router.get('/', async (req, res)=>{
 })
 
 router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specified specialisation
-  res.header( "Access-Control-Allow-Origin", "*" );
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.header("Access-Control-Allow-Headers", "x-access-token, Origin, X-Requested-With, Content-Type, Accept");
   try{
     try{
       await client.connect();

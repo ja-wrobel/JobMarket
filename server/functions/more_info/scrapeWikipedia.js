@@ -3,7 +3,7 @@ const isComputerSciencePage = require("./isComputerSciencePage.js");
 const correctLinks = require("./correctLinks.js");
 
 async function scrapeWikipedia(tech, response) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     let content = {
       first_p: '',

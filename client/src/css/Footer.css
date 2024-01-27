@@ -1,14 +1,14 @@
 @font-face {
 font-family: FreedomFont;
-src: url("..\\public\\FreedomFont.ttf");
+src: url("/FreedomFont.ttf");
 }
 @font-face {
 font-family: AstroSpace;
-src: url("..\\public\\AstroSpace.ttf");
+src: url("/AstroSpace.ttf");
 }
 @font-face {
 font-family: MayaCulpa;
-src: url("..\\public\\MayaCulpa.ttf");
+src: url("/MayaCulpa.ttf");
 }
 
 .Footer{

@@ -1,14 +1,14 @@
 @font-face {
   font-family: FreedomFont;
-  src: url("..\\public\\FreedomFont.ttf");
+  src: url("/FreedomFont.ttf");
 }
 @font-face {
   font-family: AstroSpace;
-  src: url("..\\public\\AstroSpace.ttf");
+  src: url("/AstroSpace.ttf");
 }
 @font-face {
   font-family: MayaCulpa;
-  src: url("..\\public\\MayaCulpa.ttf");
+  src: url("/MayaCulpa.ttf");
 }
 
 h2{
@@ -35,7 +35,7 @@ h2{
   height: 100vh;
 }
 body{
-  background: url("..\\public\\5040007.jpg");
+  background: url("/5040007.jpg");
   color:rgb(215, 233, 250);
   background-size: cover;
   font-family: AstroSpace;

@@ -1,4 +1,6 @@
 const py = require('python-shell');
+const address = process.env.URL || "http://localhost";
+const port = process.env.PORT || 8080;
 
 async function searchForOffers(position, response, req_ip, db){
     let wasItUpdated= false; // Flag validates whether given position was already updated (in case something on client-side went wrong)
@@ -10,7 +12,7 @@ async function searchForOffers(position, response, req_ip, db){
           if(position === 'all'){
             position_wannabe = 'backend';
           }
-          await fetch(`http://localhost:8080/upd_time/${position_wannabe}`, {
+          await fetch(`${address}:${port}/upd_time/${position_wannabe}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

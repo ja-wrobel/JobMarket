@@ -4,7 +4,8 @@ import "../css/App.css";
 import "../css/Footer.css";
 import '../index.css';
 import FooterText from "./FooterText.jsx";
-const port = import.meta.env.SERVER_PORT || 8080;
+const port = import.meta.env.VITE_SERVER_PORT || 8080;
+const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 const types = ['backend', 'frontend', 'fullstack', 'gamedev'];
 
 function Footer(){
@@ -49,7 +50,7 @@ function Footer(){
     }
 
     const fetchData = async (spec) => {
-      return await (await fetch(`http://localhost:${port}/upd_time/${spec}`, {
+      return await (await fetch(`${uri}:${port}/upd_time/${spec}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json'

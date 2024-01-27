@@ -11,7 +11,9 @@ import os
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 load_dotenv()
+server_port = os.environ['SERVER_PORT']
 uri = os.environ['URI_DATABASE']
+server_url = os.environ['SERVER_URL']
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.offerData
 """
@@ -35,7 +37,6 @@ if position == "all":
 else:
     url_flag = True
     url = f'https://it.pracuj.pl/praca?et=17%2C1&its={position}'
-browser = webdriver.Chrome()
 options = webdriver.ChromeOptions()
 options.add_argument("--enable-javascript")
 options.add_argument("--headless")
@@ -137,7 +138,7 @@ if url_flag == False:
         count(techArr, techCount)
         addTechs("langsCount", techCount)
         addTechs(v, techCount)
-        browser.get(f'http://localhost:8080/set_upd_time/{v}')
+        browser.get(f'{server_url}:{server_port}/set_upd_time/{v}')
     wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
     exit()
 else:
@@ -147,6 +148,6 @@ else:
     count(technologiesArr, technologiesCount)
     addTechs("langsCount", technologiesCount)
     addTechs(position, technologiesCount)
-    browser.get(f'http://localhost:8080/set_upd_time/{position}')   
+    browser.get(f'{server_url}:{server_port}/set_upd_time/{position}')   
     wait.until(lambda browser: browser.find_element(By.CSS_SELECTOR, 'body').is_displayed())
     exit()

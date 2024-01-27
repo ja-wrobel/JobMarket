@@ -1,7 +1,8 @@
 import useWindowControl from "../hooks/windowControl";
 import "../css/PyAccess.css";
 import PythonAccess_button from "./buttons/PythonAccess_button";
-const port = import.meta.env.SERVER_PORT || 8080;
+const port = import.meta.env.VITE_SERVER_PORT || 8080;
+const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 
 
 
@@ -34,7 +35,7 @@ function PythonAccess(props){
         mask.style.display = 'block';
         warning.className = 'load';
         warning.style.display = 'block';
-        await fetch(`http://localhost:${port}/search_for_off`, {
+        await fetch(`${uri}:${port}/search_for_off`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -53,7 +54,7 @@ function PythonAccess(props){
                 warning.className = '';
                 warning.style.display = 'none';
                 mask.style.display = 'none';
-                return window.location.reload();
+                return console.log(response);
             }
         })
         .catch(e => {
