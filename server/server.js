@@ -36,9 +36,10 @@ const rateLimiterMiddleware = (req, res, next) => {
     });
 };
 app.use(rateLimiterMiddleware);
-whitelist = [env_var.client_url];
+whitelist = [env_var.client_url, env_var.this_url+":"+env_var.port, undefined];
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log(origin);
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
