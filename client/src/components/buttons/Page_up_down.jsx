@@ -25,9 +25,9 @@ export default function Page_up_down(){
             if(scroll_position > app_height/2) setIsDirectionUp(true);
             else setIsDirectionUp(false);
         }
-        app.addEventListener('scrollend', updateScrollPosition);
+        app.addEventListener('scroll', updateScrollPosition);
         return ()=>{
-            app.removeEventListener('scrollend', updateScrollPosition);
+            app.removeEventListener('scroll', updateScrollPosition);
         }
     }, [scroll_position])
     return(

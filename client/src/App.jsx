@@ -13,7 +13,9 @@ function App() {
   return (
     <>
         <div className="App" id="App">
-          <Header />
+          <Routes>
+            <Route path="/*" element={<Header/>}/>
+          </Routes>
           <Routes>
             <Route path="/" element={<Main/>}/>
             <Route path="/_info/*" element={<Main/>}/>
@@ -32,7 +34,9 @@ function App() {
               <Route path="/sort/:spec/tech/:type" element={null}/>
             </Routes>
           </div>
-          <Page_up_down/>
+          <Routes>
+            <Route path="/*" element={<Page_up_down/>}/>
+          </Routes>
         </div>
     </>
   )
