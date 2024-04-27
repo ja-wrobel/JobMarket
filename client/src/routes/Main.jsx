@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
-const special_chars = ["#", "?", "/", ":", ";", "=", "@", ","];
-const corrected_chars = ["%23", "%22", "%2F", "%3A", "%3B", "%3D", "%40", "%2C"];
+import validateString from "../hooks/validateString";
+
 const port = import.meta.env.VITE_SERVER_PORT || 8080;
 const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 
@@ -35,10 +35,7 @@ export default function Main(){
             <ul id="list" className='langList'>
                 {allLangs.map((val)=>{
 
-                let new_val = val.name;
-                for(let i=0;i<special_chars.length;i++){
-                  if(new_val.includes(special_chars[i]))new_val = new_val.replace(special_chars[i], corrected_chars[i])
-                }
+                let new_val = validateString(val.name);
 
                 return  (<li className="li_element" onClick={()=>{
                             navigate(`/_info/${new_val}/`);
