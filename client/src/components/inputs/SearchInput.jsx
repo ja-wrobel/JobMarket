@@ -5,6 +5,7 @@ export default function SearchInput(){
     function search(){
         let inputVal = document.getElementById('search-input').value.toLowerCase();
         let list = document.getElementById('list').children;
+        if(list[0].getAttribute('accessKey') === null)return;
         for(const child of list){
             if(inputVal[0] !== "\""){
                 if(child.getAttribute('accessKey').toLowerCase().includes(inputVal)){
@@ -26,7 +27,7 @@ export default function SearchInput(){
     }
     return(
         <>
-        <input type="search" id="search-input" style={
+        <input spellCheck="false" type="search" id="search-input" style={
             {   
                 backgroundColor: '#19197094',
                 borderRadius: '5px',

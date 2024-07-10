@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import validateString from "../hooks/validateString";
 import getData from "../hooks/getData";
 import ListElement from "../components/ListElement";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Main(){
     const [entries, setEntries] = useState([]);
@@ -18,7 +19,9 @@ export default function Main(){
     <>
         <div id="list-div">
             <ul id="list" className='langList'>
-                {entries.map((entry)=>{
+                {typeof entries === 'number' ? <ErrorMessage status={entries}/> 
+                : 
+                entries.map((entry)=>{
 
                 let new_val = validateString(entry.name);
 

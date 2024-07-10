@@ -23,31 +23,46 @@ const client = new MongoClient(env_var.db_uri, {
 const db = client.db("offerData");
 const rateLimiter = new RateLimiterMemory({
   points: 41,
-  duration: 1 
+  duration: 1.5
+});
+const longTermRateLimit = new RateLimiterMemory({
+  points: 1700,
+  duration: 90,
+  blockDuration: 60*60
 });
 
 const rateLimiterMiddleware = (req, res, next) => {
-  rateLimiter.consume(req.ip)
-    .then(() => {
-      next();
+  longTermRateLimit.consume(req.ip, 2)
+    .then(()=>{
+      rateLimiter.consume(req.ip)
+      .then(() => {
+        next();
+      })
+      .catch(() => {
+        console.log(req.ip);
+        res.status(429).send('Too Many Requests');
+      });
     })
-    .catch(() => {
-      res.status(429).send('Too Many Requests');
+    .catch(()=>{
+      console.log("Blocked ip by RateLimiter: "+req.ip);
+      res.status(429).send('Way Too Many Requests, try again later...');
     });
 };
-app.use(rateLimiterMiddleware);
-whitelist = [env_var.client_url];
+whitelist = env_var.client_url;
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      callback(new Error('Not allowed by CORS'));
     }
   }
 }
+//
+//
 app.use(cors(corsOptions));
 app.use(helmet());
+app.use(rateLimiterMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -173,14 +188,21 @@ router.post('/search_for_off', express.json(), async (req, res)=>{
 
 const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
 
-router.get('/more_info/:key', async(req, res)=>{
-  rateLimiter.consume(req.ip, 30)
-    .then(async ()=>{
-      await scrapeWikipedia(req.params.key, res);
+router.get('/more_info/:key', async(req, res)=>{ 
+  longTermRateLimit.consume(req.ip, 40)
+    .then(()=>{
+      rateLimiter.consume(req.ip, 20) 
+      .then(async ()=>{
+        await scrapeWikipedia(req.params.key, res);
+      })
+      .catch(()=>{
+        res.status(429).send('Too Many Requests');
+      });
     })
     .catch(()=>{
-      res.status(429).send('Too Many Requests');
-    })
+      console.log("Blocked ip by RateLimiter: "+req.ip);
+      res.status(429).send('Way Too Many Requests, try again later...');
+    });
 });
 
 

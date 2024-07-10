@@ -4,7 +4,11 @@ const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
  * Fetches data from server
  * @method GET
  * @param {string} route ex. `/` || `/some_route/${variable}`
- * @returns response.json()
+ * @returns {JSON|number} 
+ * - `response.json();`
+ * - IF (`response.ok === false`){
+ * - `response.status`
+ * - }
  */ 
 export default async function getData(route){
     return await (await fetch(`${uri}:${port}${route}`, {
@@ -16,9 +20,11 @@ export default async function getData(route){
       })
       .then(response => {
         if(!response.ok){
-            return false;
+            return response.status;
         }
-        return response.json()
+        if(response.status === 200){
+            return response.json();
+        }
     }, reason => {
         return console.log(reason)
     }));

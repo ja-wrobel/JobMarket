@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import validateString from "../hooks/validateString";
 import getData from "../hooks/getData";
 import ListElement from "../components/ListElement";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Sorted(){
     const [entries, setEntries] = useState([]);
@@ -19,7 +20,9 @@ export default function Sorted(){
         <>
             <div id="list-div">
                 <ul id="list" className='langList'>
-                    {entries.map((entry)=>{
+                    {typeof entries === 'number' ? <ErrorMessage status={entries}/>
+                    :
+                    entries.map((entry)=>{
 
                     let new_val = validateString(entry.name);
 
