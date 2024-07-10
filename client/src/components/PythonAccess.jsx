@@ -4,8 +4,6 @@ import PythonAccess_button from "./buttons/PythonAccess_button";
 const port = import.meta.env.VITE_SERVER_PORT || 8080;
 const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 
-
-
 function PythonAccess(props){
     const windowControler = useWindowControl();
     let count = 70;

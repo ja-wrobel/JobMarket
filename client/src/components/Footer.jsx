@@ -5,8 +5,8 @@ import "../css/Footer.css";
 import '../index.css';
 import FooterText from "./FooterText.jsx";
 import correctDate from "../hooks/correctDate.js";
-const port = import.meta.env.VITE_SERVER_PORT || 8080;
-const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
+import getData from "../hooks/getData.js";
+
 const types = ['backend', 'frontend', 'fullstack', 'gamedev'];
 
 function Footer(){
@@ -42,6 +42,7 @@ function Footer(){
           }
         }else{
           oldestDate = formatedDate;
+          correctDate(oldestDate);
           flag = true;
           return [null, boolObj]; //it's still NULL here bcs i need vDate only if each spec is updated
         }
@@ -50,20 +51,10 @@ function Footer(){
         return [null, boolObj];
       }
     }
-
-    const fetchData = async (spec) => {
-      return await (await fetch(`${uri}:${port}/upd_time/${spec}`, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          mode: 'cors',
-        })).json();
-    }
     const loopData = async () => {
       const bool_obj = {};
       for(let type of types){
-        const data = await fetchData(type);
+        const data = await getData(`/upd_time/${type}`);
         const [final_date_checked, this_type_bool_obj] = await processDate(data, bool_obj);
         setContent(final_date_checked);
         if(this_type_bool_obj[type] === false){

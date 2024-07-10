@@ -89,21 +89,24 @@
   right: 0;
   top: 1.5rem;
   margin-right: 25px;
+  cursor: pointer;
+  user-select: none;
 }
 #search-message{
   display: none;
   position: absolute;
-  right: 0;
+  right: 10px;
   top: 5rem;
   font-size: small;
-}
-.icon{
-  width: 16px;
-  height: 16px;
 }
 .icon.search{
   width: 25px;
   height: 25px;
+  border: 2px solid;
+  border-radius: 100%;
+}
+.icon.search:hover{
+  border: 2px solid blue;
 }
 
 /* --------------MEDIA ONLY------------------ */

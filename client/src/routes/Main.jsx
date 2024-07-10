@@ -1,51 +1,34 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
 import validateString from "../hooks/validateString";
-
-const port = import.meta.env.VITE_SERVER_PORT || 8080;
-const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
+import getData from "../hooks/getData";
+import ListElement from "../components/ListElement";
 
 export default function Main(){
-    const [allLangs, setAllLangs] = useState([]);
-    const navigate = useNavigate();
-    const fetchData = ()=>{
-      fetch(`${uri}:${port}/`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-      })
-        .then(response => {
-          return response.json()
-        }, reason => {
-          return console.log(reason)
-        })
-        .then(data =>{
-          setAllLangs(data)
-        })
+    const [entries, setEntries] = useState([]);
+
+    const setData = async ()=>{
+      const data = await getData("/");
+      setEntries(data);
     }
-  
     useEffect(()=>{
-      fetchData();
+      setData();
     }, []);
     return(
     <>
         <div id="list-div">
             <ul id="list" className='langList'>
-                {allLangs.map((val)=>{
+                {entries.map((entry)=>{
 
-                let new_val = validateString(val.name);
+                let new_val = validateString(entry.name);
 
-                return  (<li className="li_element" onClick={()=>{
-                            navigate(`/_info/${new_val}/`);
-                            const display = document.getElementById('info_tab');
-                            if(display !== null)display.style.display = 'block';
-                        }} 
-                        id={val.name} key={val._id}>
-                            <h2 value={val.value}>{val.name}&nbsp;-&nbsp;{val.value}</h2>
-                            <p id="p_info">Click for more info</p>
-                        </li>)
+                return  (
+                  <ListElement 
+                    key={`${entry._id}`} 
+                    route={`/_info/${new_val}/`} 
+                    entry={entry}
+                  />
+                )
                 })}
             </ul>
         </div>

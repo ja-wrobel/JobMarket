@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-
 let flag = false;
+/**
+ * @returns string `'show'` || `''`
+ */
 export default function useMenuControl(){
     const [menuHoverState, setMenuHoverState] = useState('');
     useEffect(()=>{

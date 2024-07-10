@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-
+/**
+ * 
+ * @returns {string} `hidden` || `show`
+ */
 function useWindowControl(){
     const [windowControler, setWindowControler] = useState('hidden');
     const secondRoot = document.getElementById('pyAccess').innerHTML;

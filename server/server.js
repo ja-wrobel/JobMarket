@@ -157,7 +157,7 @@ router.get('/set_upd_time/:key', async (req, res)=>{
 const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
 
 router.post('/search_for_off', express.json(), async (req, res)=>{
-  rateLimiter.consume(req.ip, 20)
+  rateLimiter.consume(req.ip, 30)
     .then(async ()=>{
       console.log('Searching for new offers in progress(...) for ip: '+req.ip);
       await searchForOffers(req.body.specs, res, req.ip, client);
@@ -174,7 +174,7 @@ router.post('/search_for_off', express.json(), async (req, res)=>{
 const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
 
 router.get('/more_info/:key', async(req, res)=>{
-  rateLimiter.consume(req.ip, 15)
+  rateLimiter.consume(req.ip, 30)
     .then(async ()=>{
       await scrapeWikipedia(req.params.key, res);
     })

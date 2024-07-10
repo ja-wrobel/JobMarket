@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {useNavigate} from "react-router-dom";
 import "../css/Menu.css";
 import useMenuControl from "../hooks/menuControl";
 import MenuContener_button from "./buttons/MenuContener_button";
 
-const display = document.getElementById('info_tab');
-
-export default function MenuComponent(){
+export default function MenuContener(){
 
     const navigate = useNavigate();
     const state = useMenuControl();
@@ -77,7 +75,8 @@ export default function MenuComponent(){
             <div className="sfilter-apply-div">
                 <button onClick={resetAll} className="sfilter-control uns" id="sfilter-reset">Reset all</button>
                 <button onClick={()=>{
-                    if(display!==null)display.style.display = 'none';
+                    const display = document.getElementById('info_tab');
+                    if(display !== null || display == 'block')display.style.display = 'none';
                     if(sortVal === null && filterVal !== null){
                         navigate(`/sort/${filterVal}/`);
                     }else if(filterVal === null && sortVal !== null){

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 
-
+/**
+ * 
+ * @returns {string} `down` || `up`
+ */
 function useScrollDirection() {
     const [scrollDirection, setScrollDirection] = useState();
     useEffect(() => {

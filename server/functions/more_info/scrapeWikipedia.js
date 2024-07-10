@@ -29,7 +29,6 @@ async function scrapeWikipedia(tech, response) {
         await page.goto(`https://en.wikipedia.org/wiki/${tech}`);
         await page.waitForXPath('/html/body/div[2]/div/div[3]/main/div[1]/div/div[1]/nav/div[1]/div/ul/li[1]/a/span').
         then(async()=>{
-          // Get the title and content of the Wikipedia page
           const title = await page.$eval('#firstHeading', el => el.textContent);
           const isCSPage = await isComputerSciencePage(page);
           // Check if the page is related to computer science

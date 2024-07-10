@@ -1,21 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import "../css/App.css";
 import "../css/Header.css";
 import useScrollDirection from "../hooks/scrollDirection";
-import MenuComponent from './MenuContener';
+import MenuContener from './MenuContener';
+import SearchInput from './inputs/SearchInput';
 
 function Header() {
     const scrollDirection = useScrollDirection();
-    useEffect(()=>{
-      const icon = document.getElementById('search-icon');
-      const msg = document.getElementById('search-message');
-      icon.addEventListener('click', ()=>{
-        msg.style.display = "block";
-        setTimeout(()=>{
-          msg.style.display = "none";
-        }, 1500)
-      })
-    },[])
+    const showInput = ()=>{
+        const msg = document.getElementById('search-message');
+        if(msg.style.display == 'none'){ msg.style.display = 'block';}
+        else{ msg.style.display = 'none';}
+    }
+
     return (
       <>
         <div className={`header ${ scrollDirection === "down" ? "down" : "up"}`} id='header'>
@@ -26,7 +23,7 @@ function Header() {
                 <span></span>
                 <span></span>
               </div>
-              <MenuComponent/>
+              <MenuContener/>
             </div>
           </div>
           <div id='header-title'>
@@ -34,8 +31,8 @@ function Header() {
             <h5 id='header-h5'>according to junior job market</h5>
           </div>
           <div id='search'>
-            <div id='search-icon'><img className='icon search' src='/search-var-flat.png'></img></div>
-            <div id='search-message'>Just use Ctrl<img className='icon' src='/blue-plus-icon.png'></img>F...</div>
+            <div id='search-icon' ><img onClick={showInput} className='icon search' src='/search-var-flat.png'></img></div>
+            <div id='search-message' style={{display: 'none'}}><SearchInput/></div>
           </div>
         </div>
       </>
