@@ -170,8 +170,22 @@ router.get('/set_upd_time/:key', async (req, res)=>{
 /* ---------SEARCH FOR NEW ENTRIES USING PYTHON SCRIPT -------------------*/
 
 const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
+const acceptableSpecs = ["backend", "frontend", "fullstack", "gamedev", "all"];
 
 router.post('/search_for_off', express.json(), async (req, res)=>{
+  let isReqMalicous = true;
+  for(let accSpec of acceptableSpecs){
+    if(req.body.specs === accSpec){
+      isReqMalicous = false;
+      break;
+    }
+  }
+  if(isReqMalicous){
+    longTermRateLimit.blockDuration = 60*60*24;
+    longTermRateLimit.consume(req.ip, 1800).then(()=>{res.status(500).end();}).catch(()=>{res.status(500).end();});
+    longTermRateLimit.blockDuration = 60*60;
+    return;
+  }
   rateLimiter.consume(req.ip, 30)
     .then(async ()=>{
       console.log('Searching for new offers in progress(...) for ip: '+req.ip);
