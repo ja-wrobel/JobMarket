@@ -10,6 +10,7 @@ export default function ListElement(props){
             onClick={()=>{
                 navigate(props.route);
                 const display = document.getElementById('info_tab');
+                display.accessKey = props.entry.name;
                 if(display !== null)display.style.display = 'block';
             }} 
             id={props.entry.name} 

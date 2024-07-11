@@ -3,46 +3,60 @@ import {useNavigate} from "react-router-dom";
 import "../css/Menu.css";
 import useMenuControl from "../hooks/menuControl";
 import MenuContener_button from "./buttons/MenuContener_button";
+import validateString from "../hooks/validateString";
 
 export default function MenuContener(){
 
     const navigate = useNavigate();
     const state = useMenuControl();
 
-    const [filterVal, setFilterVal] = useState(null);
-    const [sortVal, setSortVal] = useState(null);
+    const [specVal, setSpecVal] = useState(null);
+    const [typeVal, setTypeVal] = useState(null);
 
-    const filterSelect = (e)=>{
+    const specSelect = (e)=>{
         const val = e.currentTarget.getAttribute('value');
         e.currentTarget.className += ' sel';
-        if(filterVal !== null && filterVal !== val){
-            const lastTarget = document.getElementById(filterVal);
+        if(specVal !== null && specVal !== val){
+            const lastTarget = document.getElementById(specVal);
             lastTarget.className = 'sfilter uns';
         }
-        setFilterVal(val);
+        setSpecVal(val);
     }
 
     const sortSelect = (e)=>{
         const val = e.currentTarget.getAttribute('value');
         e.currentTarget.className += ' sel';
-        if(sortVal !== null && sortVal !== val){
-            const lastTarget = document.getElementById(sortVal);
+        if(typeVal !== null && typeVal !== val){
+            const lastTarget = document.getElementById(typeVal);
             lastTarget.className = 'sfilter uns';
         }
-        setSortVal(val);
+        setTypeVal(val);
     }
 
     const resetAll = ()=>{
-        if(filterVal !== null){
-            const resetFilter = document.getElementById(filterVal);
-            resetFilter.className = 'sfilter uns';
+        if(specVal !== null){
+            const resetSpec = document.getElementById(specVal);
+            resetSpec.className = 'sfilter uns';
         }
-        if(sortVal !== null){
-            const resetSort = document.getElementById(sortVal);
+        if(typeVal !== null){
+            const resetSort = document.getElementById(typeVal);
             resetSort.className = 'sfilter uns';
         }
-        setFilterVal(null);
-        setSortVal(null);
+        setSpecVal(null);
+        setTypeVal(null);
+    }
+    /**
+     * 
+     * @param {string} specRoute `/sort/:key`
+     * @param {string} typeRoute `/tech/:key`
+     */
+    const smartNavigate = (specRoute, typeRoute)=>{
+        const infoTabHTML = document.getElementById('info_tab');
+        if(infoTabHTML.accessKey !== ''){
+            let tech_name = validateString(infoTabHTML.accessKey);
+            navigate(`${specRoute}${typeRoute}/_info/${tech_name}`);
+        }
+        else{navigate(`${specRoute}${typeRoute}/`);}
     }
 
     return (
@@ -54,10 +68,10 @@ export default function MenuContener(){
                     <span>Filter by specialisation: </span>
                 </div>
                 <div className="menu-select-box">
-                        <MenuContener_button func={filterSelect} value={"backend"} name={"Backend"}/>
-                        <MenuContener_button func={filterSelect} value={"frontend"} name={"Frontend"}/>
-                        <MenuContener_button func={filterSelect} value={"fullstack"} name={"Fullstack"}/>
-                        <MenuContener_button func={filterSelect} value={"gamedev"} name={"Gamedev"}/>
+                        <MenuContener_button func={specSelect} value={"backend"} name={"Backend"}/>
+                        <MenuContener_button func={specSelect} value={"frontend"} name={"Frontend"}/>
+                        <MenuContener_button func={specSelect} value={"fullstack"} name={"Fullstack"}/>
+                        <MenuContener_button func={specSelect} value={"gamedev"} name={"Gamedev"}/>
                 </div>
             </div>
             <div className="sfilter-parent">
@@ -75,16 +89,14 @@ export default function MenuContener(){
             <div className="sfilter-apply-div">
                 <button onClick={resetAll} className="sfilter-control uns" id="sfilter-reset">Reset all</button>
                 <button onClick={()=>{
-                    const display = document.getElementById('info_tab');
-                    if(display !== null || display == 'block')display.style.display = 'none';
-                    if(sortVal === null && filterVal !== null){
-                        navigate(`/sort/${filterVal}/`);
-                    }else if(filterVal === null && sortVal !== null){
-                        navigate(`/tech/${sortVal}/`);
-                    }else if(filterVal !== null){
-                        navigate(`/sort/${filterVal}/tech/${sortVal}`);
+                    if(typeVal === null && specVal !== null){
+                        smartNavigate(`/sort/${specVal}`, ``);
+                    }else if(specVal === null && typeVal !== null){
+                        smartNavigate(``, `/tech/${typeVal}`);
+                    }else if(specVal !== null){
+                        smartNavigate(`/sort/${specVal}`, `/tech/${typeVal}`);
                     }else{
-                        navigate(`/`);
+                        smartNavigate(``, ``);
                     }
                 }} className="sfilter-control uns" id="sfilter-apply">Apply</button>
             </div>

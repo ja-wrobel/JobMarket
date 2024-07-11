@@ -20,18 +20,19 @@ function App() {
             <Route path="/" element={<Main/>}/>
             <Route path="/_info/*" element={<Main/>}/>
             <Route path="/sort/:spec/*" element={<Sorted/>}/>
-            <Route path="/tech/:type" element={<SortedByTech/>}/>
-            <Route path="/sort/:spec/tech/:type" element={<Sorted/>}/>
+            <Route path="/tech/:type/*" element={<SortedByTech/>}/>
+            <Route path="/sort/:spec/tech/:type/*" element={<Sorted/>}/>
           </Routes>
           <div id="info_tab" className="fancy_scroll">
             <div className="info_btn" onClick={closeInfoTab}>X</div>
             <Routes>
-              <Route path="/" element={null}></Route>
-              <Route path="/_info/:name/*" element={<TechInfo/>}/>
-              <Route path="/sort/:spec" element={null}></Route>
-              <Route path="/tech/:type" element={null}></Route>
-              <Route path="/sort/:spec/_info/:name" element={<TechInfo/>}/>
+              <Route path="/" element={null}/>
+              <Route path="/sort/:spec" element={null}/>
               <Route path="/sort/:spec/tech/:type" element={null}/>
+              <Route path="/_info/:name" element={<TechInfo/>}/>
+              <Route path="/sort/:spec/_info/:name" element={<TechInfo/>}/>
+              <Route path="/tech/:type/_info/:name" element={<TechInfo/>}/>
+              <Route path="/sort/:spec/tech/:type/_info/:name" element={<TechInfo/>}/>
             </Routes>
           </div>
           <Routes>
