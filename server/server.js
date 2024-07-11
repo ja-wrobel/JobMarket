@@ -34,18 +34,17 @@ const longTermRateLimit = new RateLimiterMemory({
 const rateLimiterMiddleware = (req, res, next) => {
   longTermRateLimit.consume(req.ip, 2)
     .then(()=>{
-      rateLimiter.consume(req.ip)
-      .then(() => {
-        next();
-      })
-      .catch(() => {
-        console.log(req.ip);
-        res.status(429).send('Too Many Requests');
-      });
+        rateLimiter.consume(req.ip)
+        .then(() => {
+          next();
+        })
+        .catch(() => {
+          res.status(429).send('Too Many Requests');
+        });
     })
     .catch(()=>{
-      console.log("Blocked ip by RateLimiter: "+req.ip);
-      res.status(429).send('Way Too Many Requests, try again later...');
+        console.log("Blocked ip by RateLimiter: "+req.ip);
+        res.status(429).send('Way Too Many Requests, try again later...');
     });
 };
 whitelist = env_var.client_url;
@@ -148,52 +147,35 @@ router.get('/upd_time/:key', async(req, res)=>{
   }
 });
 
-router.get('/set_upd_time/:key', async (req, res)=>{
-  let updateTimeData;
-  let date = new Date();
-  try{
-    await client.connect();
-    updateTimeData = await db.collection('lastUpdateTime').find({type: req.params.key}).toArray();
-    let query = db.collection('lastUpdateTime').insertOne({"date": date, "_id": updateTimeData.length+1, "type": req.params.key});
-    console.log(query);
-    return query;
-  }catch(e){
-    console.log(e);
-  }
-  finally{
-    res.status(200).send(date);
-  }
-})
-
 
 
 /* ---------SEARCH FOR NEW ENTRIES USING PYTHON SCRIPT -------------------*/
 
 const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
-const acceptableSpecs = ["backend", "frontend", "fullstack", "gamedev", "all"];
+const isReqBodyOk = require('./functions/search_for_off/isReqBodyOk.js');
 
-router.post('/search_for_off', express.json(), async (req, res)=>{
-  let isReqMalicous = true;
-  for(let accSpec of acceptableSpecs){
-    if(req.body.specs === accSpec){
-      isReqMalicous = false;
-      break;
-    }
-  }
-  if(isReqMalicous){
+router.post('/search_for_off', async (req, res)=>{
+  const isReqSafe = isReqBodyOk(req.body.specs);
+  if(!isReqSafe){
     longTermRateLimit.blockDuration = 60*60*24;
     longTermRateLimit.consume(req.ip, 1800).then(()=>{res.status(500).end();}).catch(()=>{res.status(500).end();});
     longTermRateLimit.blockDuration = 60*60;
     return;
   }
-  rateLimiter.consume(req.ip, 30)
-    .then(async ()=>{
-      console.log('Searching for new offers in progress(...) for ip: '+req.ip);
-      await searchForOffers(req.body.specs, res, req.ip, client);
+  longTermRateLimit.consume(req.ip, 400)
+    .then(()=>{
+        rateLimiter.consume(req.ip, 30)
+        .then(async ()=>{
+          console.log('Searching for new offers in progress(...) for ip: '+req.ip);
+          await searchForOffers(req.body.specs, res, req.ip, client);
+        })
+        .catch(()=>{
+          res.status(429).end('Too Many Requests');
+        });
     })
     .catch(()=>{
-      res.status(429).send('Too Many Requests');
-    });
+       res.status(429).end();
+    })
 });
 
 
@@ -205,17 +187,17 @@ const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
 router.get('/more_info/:key', async(req, res)=>{ 
   longTermRateLimit.consume(req.ip, 40)
     .then(()=>{
-      rateLimiter.consume(req.ip, 20) 
-      .then(async ()=>{
-        await scrapeWikipedia(req.params.key, res);
-      })
-      .catch(()=>{
-        res.status(429).send('Too Many Requests');
-      });
+        rateLimiter.consume(req.ip, 20) 
+        .then(async ()=>{
+          await scrapeWikipedia(req.params.key, res);
+        })
+        .catch(()=>{
+          res.status(429).send('Too Many Requests');
+        });
     })
     .catch(()=>{
-      console.log("Blocked ip by RateLimiter: "+req.ip);
-      res.status(429).send('Way Too Many Requests, try again later...');
+        console.log("Blocked ip by RateLimiter: "+req.ip);
+        res.status(429).send('Way Too Many Requests, try again later...');
     });
 });
 

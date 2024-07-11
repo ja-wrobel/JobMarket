@@ -4,9 +4,10 @@ export default function SearchInput(){
     }
     function search(){
         let inputVal = document.getElementById('search-input').value.toLowerCase();
-        let list = document.getElementById('list').children;
-        if(list[0].getAttribute('accessKey') === null)return;
-        for(const child of list){
+        let list = document.getElementById('list');
+        if(!list)return;
+        if(list.children[0].getAttribute('accessKey') === null)return;
+        for(const child of list.children){
             if(inputVal[0] !== "\""){
                 if(child.getAttribute('accessKey').toLowerCase().includes(inputVal)){
                     child.hidden = false;

@@ -60,7 +60,7 @@ def browser_setting(spec):
     browser.add_cookie(cookie2)
     browser.refresh()
 
-def main(techArr, IDArr):
+def main(techArr, IDArr, position):
     try:
         offersArr = browser.find_elements(By.XPATH, '//*//div[@data-test="default-offer"]')
         for i, e in enumerate(offersArr):
@@ -71,8 +71,19 @@ def main(techArr, IDArr):
             lookForTechnologies(att, i, techArr)
     except NoSuchElementException:
         pass
+    finally:
+        length = len(db.lastUpdateTime.find({"type": position}).distinct("_id"))
+        db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": position})
 
 def lookForTechnologies(id, index, arr):
+    """
+    Scrapes data from offer found by ID into array given as parameter
+    
+    Parameters:
+        id (int|string): id of offer
+        index (int): index of this offer in ID array
+        arr (defaultdict): [Any, list] - Scraped data goes here
+    """
     result = browser.find_elements(By.XPATH, f"//*/div[@data-test-offerid='{id}']//*//span[@data-test='technologies-item']")
     for e in result:
         data = e.get_attribute("innerHTML")
@@ -130,21 +141,17 @@ if url_flag == False:
         techArr = defaultdict(list)
         IDArr = defaultdict(list)
         techCount = defaultdict(int)
-        main(techArr, IDArr)
+        main(techArr, IDArr, v)
         add_new_id(IDArr, techArr)
         count(techArr, techCount)
         addTechs("langsCount", techCount)
         addTechs(v, techCount)
-        length = len(db.lastUpdateTime.find({"type": v}).distinct("_id"))
-        db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": v})
     exit()
 else:
     browser_setting(position)
-    main(technologiesArr, idArr)
+    main(technologiesArr, idArr, position)
     add_new_id(idArr, technologiesArr)
     count(technologiesArr, technologiesCount)
     addTechs("langsCount", technologiesCount)
     addTechs(position, technologiesCount)
-    length = len(db.lastUpdateTime.find({"type": position}).distinct("_id"))
-    db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": position})
     exit()

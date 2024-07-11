@@ -28,6 +28,7 @@ function App() {
             <Routes>
               <Route path="/" element={null}/>
               <Route path="/sort/:spec" element={null}/>
+              <Route path="/tech/:type" element={null}/>
               <Route path="/sort/:spec/tech/:type" element={null}/>
               <Route path="/_info/:name" element={<TechInfo/>}/>
               <Route path="/sort/:spec/_info/:name" element={<TechInfo/>}/>
