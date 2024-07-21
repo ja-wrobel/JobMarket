@@ -2,47 +2,69 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import validateString from "../hooks/validateString";
 import "../css/TechInfo.css";
-import getData from "../hooks/getData";
+import forgeRequest from "../hooks/forgeRequest";
 import DOMPurify from 'dompurify';
 import ErrorMessage from "../components/ErrorMessage";
 
-let isRequestInProgress = false; // false allows useEffect to fire fetchData func, where it is set to true in order to stop useEffect from running fetchData multiple times because server is still processing previous request
+
 
 function TechInfo(){
     const [info, setInfo] = useState([]);
     let {name} = useParams();
+    let isRequestInProgress = false; // false allows useEffect to fire fetchData func, where it is set to true in order to stop useEffect from running fetchData multiple times because server is still processing previous request
+    let isParameterValid = false;
+
     const setData = async () => {
+
+        if(name === undefined){ return console.log('Something went wrong...'); }
+
         isRequestInProgress = true;
         const mask = document.getElementsByClassName('li_element');
         const loading_animation = document.getElementById('loading');
-        for(const e of mask){e.style.pointerEvents = 'none';}
+
+        for(const e of mask){
+            if(e.getAttribute("accesskey") === name){
+                isParameterValid = true;
+            }
+            e.style.pointerEvents = 'none';
+        }
+        if(!isParameterValid){ 
+            setInfo({first_p: "Invalid parameter..."});
+            return console.log("Invalid parameter...")
+        }
+
         loading_animation.className = 'load';
         loading_animation.style.display = 'block';
+
         name = validateString(name);
 
-        await getData(`/more_info/${name}`)
-            .then(async data=>{
-                if(typeof data === 'number'){
-                    loading_animation.className = '';
-                    for(const e of mask){e.style.pointerEvents = '';}
-                    loading_animation.style.display = 'none';
-                    setInfo(data);
-                    isRequestInProgress = false;
-                    return console.log('Something went wrong...');
-                }
-                name = validateString(name);
+        await forgeRequest(`/more_info/${name}`, 'GET')
+        .then(async data=>{
+            if(typeof data === 'number'){
                 loading_animation.className = '';
-                loading_animation.style.display = 'none';
+
                 for(const e of mask){e.style.pointerEvents = '';}
-                if(data.second_p === ''){
-                    data.first_p = `Couldn't find article related to this subject...`;
-                    isRequestInProgress = false;
-                    setInfo(data);
-                    return;
-                }
+
+                loading_animation.style.display = 'none';
+                setInfo(data);
+                isRequestInProgress = false;
+                return console.log('Something went wrong...');
+            }
+            name = validateString(name);
+            loading_animation.className = '';
+            loading_animation.style.display = 'none';
+
+            for(const e of mask){e.style.pointerEvents = '';}
+
+            if(data.second_p === ''){
+                data.first_p = `Couldn't find article related to this subject...`;
                 isRequestInProgress = false;
                 setInfo(data);
-            });
+                return;
+            }
+            isRequestInProgress = false;
+            setInfo(data);
+        });
     }
     useEffect(()=>{
         if(!isRequestInProgress){

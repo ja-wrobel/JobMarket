@@ -8,8 +8,8 @@ function isReqBodyOk(reqBody){
     let isReqOk = false;
     for(let accSpec of acceptableSpecs){
         if(reqBody === accSpec){
-          isReqOk = true;
-          return isReqOk;
+            isReqOk = true;
+            return isReqOk;
         }
     }
     return isReqOk;

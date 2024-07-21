@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-let flag = false;
+let isMenuOnScreen = false;
 /**
- * @returns string `'show'` || `''`
+ * @returns {string} `'show'` || `''`
  */
 export default function useMenuControl(){
     const [menuHoverState, setMenuHoverState] = useState('');
@@ -16,20 +16,20 @@ export default function useMenuControl(){
             setMenuHoverState('');
         }
         const menuClick = ()=>{
-            if(flag === true){
+            if(isMenuOnScreen === true){
                 setMenuHoverState('');
-                flag = false;
+                isMenuOnScreen = false;
                 return;
             }
             setMenuHoverState('show');
             menu.removeEventListener('mouseover', mouseOver);
             menu.removeEventListener('mouseout', mouseLeave);
-            flag = true;
+            isMenuOnScreen = true;
             return;
         }
         const menuHide = ()=>{
             setMenuHoverState('');
-            flag = false;
+            isMenuOnScreen = false;
             return;
         }
         out.addEventListener('click', menuHide);

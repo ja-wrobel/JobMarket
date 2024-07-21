@@ -14,28 +14,28 @@ function Header() {
     }
 
     return (
-      <>
+    <>
         <div className={`header ${ scrollDirection === "down" ? "down" : "up"}`} id='header'>
-          <div id='header-menu'>
-            <div id='slide-ctrl'>
-              <div id='menu-btn'>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <MenuContener/>
+            <div id='header-menu'>
+                <div id='slide-ctrl'>
+                    <div id='menu-btn'>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <MenuContener/>
+                </div>
             </div>
-          </div>
-          <div id='header-title'>
-            <h1 id='header-h1'>Most popular technologies</h1>
-            <h5 id='header-h5'>according to junior job market</h5>
-          </div>
-          <div id='search'>
-            <div id='search-icon' ><img onClick={showInput} className='icon search' src='/search-var-flat.png'></img></div>
-            <div id='search-message' style={{display: 'none'}}><SearchInput/></div>
-          </div>
+            <div id='header-title'>
+                <h1 id='header-h1'>Most popular technologies</h1>
+                <h5 id='header-h5'>according to junior job market</h5>
+            </div>
+            <div id='search'>
+                <div id='search-icon' ><img onClick={showInput} className='icon search' src='/search-var-flat.png'></img></div>
+                <div id='search-message' style={{display: 'none'}}><SearchInput/></div>
+            </div>
         </div>
-      </>
+    </>
     );
   };
 

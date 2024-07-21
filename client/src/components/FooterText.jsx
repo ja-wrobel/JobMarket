@@ -23,9 +23,9 @@ export default function FooterText(props){
     }, [boolArr])
     return(
         <>
-        {props.ifUpdated === true &&
+        {props.isUpdated === true &&
         props.lastUpdate}
-        {props.ifUpdated === false &&
+        {props.isUpdated === false &&
         <div>
             <span>Not every specialisation has been updated in last 24 hours...</span>
             <button className="PyAccess-btn uns" id="PyAccess-footer-btn">

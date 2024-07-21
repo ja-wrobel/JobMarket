@@ -6,21 +6,11 @@ const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 
 function PythonAccess(props){
     const windowControler = useWindowControl();
-    let count = 70;
     const warning = document.getElementById('PyAccess-validate');
     
     async function searchButton(){
         const form = document.getElementById('PyAccess-form');
         if(form.specs.value === ''){
-            if(warning.innerHTML !== ''){
-                warning.style.color = `rgb(${count},0,0)`;
-                if(count < 250){count+=20;}
-                else{
-                    count = 150;
-                    warning.style.fontSize = 'x-large';
-                }
-                return 0;
-            }
             warning.innerHTML = "You really should choose specialisation...";
             warning.style.display = "block";
             return 0;

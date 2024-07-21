@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import validateString from "../hooks/validateString";
-import getData from "../hooks/getData";
+import forgeRequest from "../hooks/forgeRequest";
 import ListElement from "../components/ListElement";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -9,11 +9,11 @@ export default function Main(){
     const [entries, setEntries] = useState([]);
 
     const setData = async ()=>{
-      const data = await getData("/");
-      setEntries(data);
+        const data = await forgeRequest("/", "GET");
+        setEntries(data);
     }
     useEffect(()=>{
-      setData();
+        setData();    
     }, []);
     return(
     <>
@@ -26,11 +26,11 @@ export default function Main(){
                 let new_val = validateString(entry.name);
 
                 return  (
-                  <ListElement 
-                    key={`${entry._id}`} 
-                    route={`/_info/${new_val}/`} 
-                    entry={entry}
-                  />
+                    <ListElement 
+                        key={`${entry._id}`} 
+                        route={`/_info/${new_val}/`} 
+                        entry={entry}
+                    />
                 )
                 })}
             </ul>

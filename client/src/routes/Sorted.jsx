@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import validateString from "../hooks/validateString";
-import getData from "../hooks/getData";
+import forgeRequest from "../hooks/forgeRequest";
 import ListElement from "../components/ListElement";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -10,7 +10,7 @@ export default function Sorted(){
     const {spec} = useParams();
 
     const setData = async ()=>{
-        const data = await getData(`/specs/${spec}`);
+        const data = await forgeRequest(`/specs/${spec}`, 'GET');
         setEntries(data);
     }
     useEffect(()=>{
