@@ -100,13 +100,13 @@ flag = False
 def add_new_id(IDArr, techArr):
     for k, id in IDArr.items():
         flag = False
-        for mongoID in db.IDs.distinct("ID"):
+        for mongoID in db.ids.distinct("ID"):
             if id[0] == mongoID:
                 techArr.pop(k)
                 flag = True
                 break
         if flag == False:
-            db.IDs.insert_one({"ID": id[0]})
+            db.ids.insert_one({"ID": id[0]})
 
 def count(techArr, techCount):
     for k, v in techArr.items():

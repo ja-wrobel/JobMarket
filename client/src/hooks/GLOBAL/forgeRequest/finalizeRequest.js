@@ -8,14 +8,14 @@
  * @param {string} port 
  * @returns {JSON|number|Response} `JSON` for `GET`, `number` = `response.status` in case of error, `Response` for methods like `POST`
  */
-export default async function finalizeRequest(userAuthenticated, route, METHOD, body_content, uri, port){
+export default async function finalizeRequest(userAuthenticated, METHOD, body_content, uri, port){
     if(localStorage.getItem('auth_in_progress')){
         localStorage.removeItem('auth_in_progress');
     }
-    if(localStorage.getItem('token') === null || localStorage.getItem('user_id') === null || localStorage.getItem('expire_at') === null || localStorage.getItem('user_created_at') === null){
+    if( !userAuthenticated.isValid() ){
         return 404;
     }
-    return await (fetch(`${uri}:${port}${route}`, {
+    return await (fetch(`${uri}:${port}${userAuthenticated.getPath()}`, {
         method: METHOD,
         headers: {
             'Content-Type': 'application/json',

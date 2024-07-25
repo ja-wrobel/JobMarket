@@ -20,7 +20,7 @@ export default async function authorizeUser(uri, port, route, userAuthenticated)
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'U_id': `${userAuthenticated !== undefined ? localStorage.getItem('user_id') : ''}`
+            'U_id': `${userAuthenticated !== undefined ? userAuthenticated.getID() : ''}`
         },
         mode: 'cors'
     })
@@ -35,6 +35,7 @@ export default async function authorizeUser(uri, port, route, userAuthenticated)
     .then(auth_json => {
         const user = new authorizationControl(auth_json.user_id, auth_json.token, new Date(auth_json.date), new Date(auth_json.created_at), route, true);
         user.setLocalData();
+        localStorage.setItem('auth_in_progress', 'done');
         return user;
     }))
 

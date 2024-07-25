@@ -58,27 +58,15 @@ const corsOptions = {
     }
 }
 function setCorsHeaders(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://192.168.1.20:5173');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, XSRF-Token');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, XSRF-Token, U_id');
     next();
   }
 
-/**
- * creates token - same format as _id in mongo
- * @param {number} h Integer between 2 and 18 sets type of number conversion and randomness
- * @param {number} length Integer sets length of id
- * - `length` will be always at least 1 char bigger - UP TO 7 chars bigger 
- * - dependant on `h` value
- * @returns {string} random string, for string similar to Mongo $OID set:
- * - `h` to `16`
- * - `length` to `20`
- */
-const ObjectId = (h = 16, length = 50, m = Math, d = Date, s = s => m.floor(s).toString(h*2)) => 
-    s(d.now() / 10000000) + ' '.repeat(length).replace(/./g, () => s(m.random() * h)); 
 //
 //
 const secureXSRF = require("./functions/global/secureXSRF.js");
+const tokenControl = require("./functions/global/tokenController.js");
 
 app.use(cors(corsOptions));
 app.use(setCorsHeaders);
@@ -93,55 +81,37 @@ app.use('/', router);
 app.listen(env_var.port, async ()=>{
     console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
     console.log(new Date());
-    console.log(ObjectId(16, 20));
+    console.log(tokenControl.generateObjectId(16,20));
 })
 
 
 /* ------------- GET ENTRIES FROM DATABASE ---------------- */
 
 router.get('/auth', async (req, res) => {
-    let get_token;
-    let new_token = ObjectId();
-    let new_id = ObjectId(16, 20);
-    const new_date = new Date();
-    let created_at;
+
+    const user = new tokenControl( req, res, db.collection('auth') );
     try{
         await client.connect();
+        const data = await user.findUser()
 
-        if(req.header('U_id') !== undefined && req.header('U_id') !== ''){
-            get_token = await db.collection('AUTH').find({"user._id": req.header('U_id'), "user._ip": req.ip}).toArray();
-            if(get_token.length === 0){
-                new_id = req.header('U_id');
-                created_at = new_date;
-                return await db.collection('AUTH').insertOne({"date": new_date, user:{"_id": req.header('U_id'), "_token": new_token, "_ip": req.ip}});
-            }
+        if( data.length > 0 && user.getIsMarkedForUpdate() ){
+            user.updateUser(data[0].user._id);
+            user.setClientId(data[0].user._id);
+            user.setCreatedAt( new Date( data[0].date ) );
+            return user;
         }
-        else{
-            get_token = await db.collection('AUTH').find({"user._ip": req.ip}).toArray();
-            if(get_token.length > 0){
-                const update_token = await db.collection('AUTH').updateMany(
-                    {"user._id": get_token[0].user._id, "user._ip": req.ip},
-                    {"$set": {"user._token": new_token}}
-                );
-                new_id = get_token[0].user._id;
-                created_at = get_token[0].date;
-                return update_token;
-            }
+        if( data.length > 0 && !user.getIsMarkedForUpdate() ){
+            user.setUser( data[0].user._id, data[0].token._token, new Date( data[0].date ) );
+            return user;
         }
-        
-        if(get_token.length === 0){
-            created_at = new_date;
-            return await db.collection('AUTH').insertOne({"date": new_date, user:{"_id": new_id, "_token": new_token, "_ip": req.ip}});
-        }
-        new_token = get_token[0].user._token;
-        new_id = get_token[0].user._id;
-        created_at = get_token[0].date;
+
+        user.insertUser();
     }catch(e){
         console.log(e);
         return res.sendStatus(500);
     }finally{
         res.setHeader('X-Xsrf-Token', 'sent');
-        return res.status(200).send({token: new_token, user_id: new_id, date: new_date, created_at: created_at});
+        return res.status(200).send( user.getUser() );
     }
 })
 

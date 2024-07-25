@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const isComputerSciencePage = require("./isComputerSciencePage.js");
 const correctLinks = require("./correctLinks.js");
-
+// todo: could be easier to read and understand if it was rewrited as a class
 async function scrapeWikipedia(tech, response) {
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();

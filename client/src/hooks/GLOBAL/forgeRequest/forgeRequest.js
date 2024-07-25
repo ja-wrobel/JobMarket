@@ -23,35 +23,32 @@ export default async function forgeRequest(route, METHOD, body_content){
 
     const userAuthenticated = new authorizationControl();
     userAuthenticated.setPath(route);
-    
-    if(localStorage.getItem('user_id') !== null){
-        userAuthenticated.setID(localStorage.getItem('user_id'));
-    }
 
-    if(localStorage.getItem('token') !== null){
+    if(localStorage.getItem('user_id') !== null){
         userAuthenticated.constructFromLocalData();
     }
+    const isActive = userAuthenticated.getIsTokenActive();
 
-    if(userAuthenticated.getID() === '' && localStorage.getItem('auth_in_progress') !== 'done'){
+    if(userAuthenticated.getID() === '' && localStorage.getItem('auth_in_progress') !== 'done' && !isActive){
 
         const user = await authorizeUser(uri, port, route);
         if(!user){
             return 404;
         }
         userAuthenticated.merge(user);
-        console.log(userAuthenticated);
-        return await finalizeRequest(userAuthenticated, route, METHOD, body_content, uri, port);
-    }else if(localStorage.getItem('auth_in_progress') !== 'done' && localStorage.getItem('user_id') !== null && !userAuthenticated.getIsTokenActive()){
+        return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
+    }
+    else if(userAuthenticated.getID() !== '' && localStorage.getItem('auth_in_progress') !== 'done' && !isActive){
 
         const user = await authorizeUser(uri, port, route, userAuthenticated);
-        console.log(user);
         if(!user){
             return 404;
         }
         userAuthenticated.merge(user);
-        return await finalizeRequest(userAuthenticated, route, METHOD, body_content, uri, port);
-    }else{
-        return await finalizeRequest(userAuthenticated, route, METHOD, body_content, uri, port);
+        return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
+    }
+    else{
+        return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
     }
 
 }

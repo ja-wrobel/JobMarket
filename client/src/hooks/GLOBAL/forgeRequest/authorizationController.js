@@ -10,15 +10,16 @@ class authorizationControl{
      * @param {Date} expiration_date of token  + 10 minutes by default
      * @param {Date} user_created_at user date in mongo
      * @param {string} path Request path, each path will generate a bit different and unique token
-     * @param {boolean} isTokenActive  `true` by default, set to `false` if token expired
+     * @param {boolean} isTokenActive  `false` by default, set to `true` if token is active
      * @method merge()
      * @method constructFromLocalData()
      * @method setLocalData()
      * @method clearLocalData()
      * @method getUserExpirationDate()
+     * @method isValid() 
      * @static @method waitForAuthorization()
      */
-    constructor(user_id = '', token = '', expiration_date = new Date(), user_created_at = new Date(), path = '', isTokenActive = false){
+    constructor(user_id = '', token = '', expiration_date = new Date(0), user_created_at = new Date(0), path = '', isTokenActive = false){
         this.user_id = user_id;
         this.token = token; 
         this.expiration_date = new Date(expiration_date.setMinutes( expiration_date.getMinutes() + 10 ) );
@@ -40,13 +41,15 @@ class authorizationControl{
         this.isTokenActive = user.getIsTokenActive();
     }
     constructFromLocalData(){
+        this.user_id = localStorage.getItem('user_id');
         this.token = localStorage.getItem('token');
         this.expiration_date = new Date(localStorage.getItem('expire_at'));
         this.user_created_at = new Date(localStorage.getItem('user_created_at'));
-        this.isTokenActive = true;
         this.getIsTokenActive();
     }
     clearLocalData(){
+        this.user_id = '';
+        this.token = '';
         localStorage.removeItem('user_id');
         localStorage.removeItem('token');
         localStorage.removeItem('expire_at');
@@ -99,7 +102,7 @@ class authorizationControl{
     }
     getUserExpirationDate(){
         const date = new Date(this.user_created_at);
-        return new Date(date.setMinutes( date.getMinutes() + 120));    // mongo will delete user after this date
+        return new Date(date.setMinutes( date.getMinutes() + 61));    // mongo will delete user after this date
     }
     getPath(){
         return this.path;
@@ -108,20 +111,28 @@ class authorizationControl{
      * Apart of standard GET method, it compares if `expiration_date` in ms is smaller than `new Date()`
      * - if so - it removes `token` and `expire_at` from local storage and sets this to `false`
      * - and checks if user still exists in db, if not - clears localStorage from dependant items
-     * @returns {boolean} `false` === token already expired
+     * @returns {Promise<boolean>} `false` === token already expired
      */
     getIsTokenActive(){
         const date_now = new Date();
-        if( this.expiration_date.getTime() <= date_now.getTime()){
-            this.isTokenActive = false;
-            localStorage.removeItem('token');
-            localStorage.removeItem('expire_at');
+
+        if( this.expiration_date.getTime() > date_now.getTime() && this.getUserExpirationDate().getTime() > date_now.getTime()){ // done by method bcs it's cleaner and setMinutes() is weird
+            this.isTokenActive = true;  
         }
-        if( this.getUserExpirationDate().getTime() <= date_now.getTime()){ // done by method bcs it's cleaner and setMinutes() is weird
-            this.isTokenActive = false;
-            this.clearLocalData();
-        }
+        else this.isTokenActive = false;
+        
+        if(this.getUserExpirationDate().getTime() <= date_now.getTime()) this.clearLocalData();
+
         return this.isTokenActive;
+    }
+    isValid(){
+        if( this.user_id === '' ||
+            this.token === '' ||
+            this.path === '' ||
+            this.isTokenActive === false ||
+            localStorage.getItem('expire_at') === null ||
+            localStorage.getItem('user_created_at') === null ) { return false; }
+        else { return true; };
     }
 
     /**
@@ -138,7 +149,6 @@ class authorizationControl{
                     resolve();
                 }
                 else{
-                    user.setID(localStorage.getItem('user_id'));
                     user.constructFromLocalData();
                     user.setPath(route);
                     resolve(user);
