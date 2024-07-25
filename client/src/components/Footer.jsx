@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react"
 import React from 'react'
-import "../css/App.css";
 import "../css/Footer.css";
 import '../index.css';
 import FooterText from "./FooterText.jsx";
 import correctDate from "../hooks/correctDate.js";
-import forgeRequest from "../hooks/forgeRequest.js";
+import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest.js";
 
 const types = ['backend', 'frontend', 'fullstack', 'gamedev'];
 
@@ -32,17 +31,26 @@ function Footer(){
             second: date.getSeconds()
         }
         if(!isFirstTypeChecked){
-            oldest_DHMS = Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + Number(formatedDate.minute)*60 + Number(formatedDate.second); 
+            oldest_DHMS = (
+                Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + 
+                Number(formatedDate.minute)*60 + Number(formatedDate.second)
+            );
             correctDate(formatedDate);
             final_date_as_string = `Updated at:  ${formatedDate.year}-${formatedDate.month}-${formatedDate.day}  ${formatedDate.hour}:${formatedDate.minute}:${formatedDate.second}  `;
             isFirstTypeChecked = true;
             return [null, boolObj]; //it's still NULL here bcs i need final_date_as_string only if each spec is updated
         }
 
-        let current_DHMS = Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + Number(formatedDate.minute)*60 + Number(formatedDate.second); //date in seconds
+        let current_DHMS = (
+            Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + 
+            Number(formatedDate.minute)*60 + Number(formatedDate.second)
+        ); //date in seconds
 
         if(current_DHMS < oldest_DHMS){
-            oldest_DHMS = Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + Number(formatedDate.minute)*60 + Number(formatedDate.second); 
+            oldest_DHMS = (
+                Number(formatedDate.day)*86400 + Number(formatedDate.hour)*3600 + 
+                Number(formatedDate.minute)*60 + Number(formatedDate.second)
+            ); 
             correctDate(formatedDate);
             final_date_as_string = `Updated at:  ${formatedDate.year}-${formatedDate.month}-${formatedDate.day}  ${formatedDate.hour}:${formatedDate.minute}:${formatedDate.second}  `;
             return [final_date_as_string, boolObj];

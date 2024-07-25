@@ -1,8 +1,7 @@
 import useWindowControl from "../hooks/windowControl";
 import "../css/PyAccess.css";
 import PythonAccess_button from "./buttons/PythonAccess_button";
-const port = import.meta.env.VITE_SERVER_PORT || 8080;
-const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
+import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
 
 function PythonAccess(props){
     const windowControler = useWindowControl();
@@ -23,14 +22,8 @@ function PythonAccess(props){
         mask.style.display = 'block';
         warning.className = 'load';
         warning.style.display = 'block';
-        await fetch(`${uri}:${port}/search_for_off`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            body: JSON.stringify(req_body)
-        })
+        
+        await forgeRequest(`/search_for_off`, 'POST', req_body)
         .then((response) => {
             if(!response.ok){
                 warning.innerHTML = `Something went wrong... (HTTP Error: ${response.status===429 ? '429) - Too Many Requests - try again in one hour' : `${response.status})`}`;

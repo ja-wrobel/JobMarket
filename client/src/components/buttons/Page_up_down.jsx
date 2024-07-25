@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import "../../css/Page_up_down.css";
 
-const arrowUp = (<img alt="up" className="arrow" src="/arrow_up.png"></img>);
-const arrowDown = (<img alt="down" className="arrow" src="/arrow_down.png"></img>);
-
 export default function Page_up_down(){
     const [isDirectionUp, setIsDirectionUp] = useState(false);
     let scroll_position;
@@ -33,11 +30,9 @@ export default function Page_up_down(){
     return(
         <>
         <div onClick={handleClick} id="page_up_down">
-            {isDirectionUp===true && 
-            arrowUp
-            }
-            {isDirectionUp===false &&
-            arrowDown}
+            <img alt="down" className={
+                `arrow ${isDirectionUp === true ? 'up' : 'down'}`
+            } src="/arrow_down.png"/>
         </div>
         </>
     )

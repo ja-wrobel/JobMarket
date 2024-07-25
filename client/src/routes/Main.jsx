@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import validateString from "../hooks/validateString";
-import forgeRequest from "../hooks/forgeRequest";
+import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
 import ListElement from "../components/ListElement";
 import ErrorMessage from "../components/ErrorMessage";
 

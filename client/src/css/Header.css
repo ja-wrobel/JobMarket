@@ -45,6 +45,10 @@
     align-items: center;
     flex-direction: column;
 }
+#header-title:hover{
+    background-image: linear-gradient(to right, rgba(0, 40, 90, 0.50), rgb(0 25 55 / 95%), rgba(0, 73, 82, 0.50));
+    border-radius: 100%;
+}
 #header-h1{
     margin-bottom: 0.3rem;
     font-size: 1.1em;

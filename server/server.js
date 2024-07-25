@@ -63,6 +63,19 @@ function setCorsHeaders(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, XSRF-Token');
     next();
   }
+
+/**
+ * creates token - same format as _id in mongo
+ * @param {number} h Integer between 2 and 18 sets type of number conversion and randomness
+ * @param {number} length Integer sets length of id
+ * - `length` will be always at least 1 char bigger - UP TO 7 chars bigger 
+ * - dependant on `h` value
+ * @returns {string} random string, for string similar to Mongo $OID set:
+ * - `h` to `16`
+ * - `length` to `20`
+ */
+const ObjectId = (h = 16, length = 50, m = Math, d = Date, s = s => m.floor(s).toString(h*2)) => 
+    s(d.now() / 10000000) + ' '.repeat(length).replace(/./g, () => s(m.random() * h)); 
 //
 //
 const secureXSRF = require("./functions/global/secureXSRF.js");
@@ -71,40 +84,64 @@ app.use(cors(corsOptions));
 app.use(setCorsHeaders);
 app.use(helmet());
 app.use(rateLimiterMiddleware);
-//app.use(secureXSRF());
+app.use(secureXSRF(client, db));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
-/*
-async function waitForToken(req, res, next){
-    await secureXSRF(req, res, client, db, router);
-    next();
-}
-app.use(waitForToken);
-*/
+
 app.listen(env_var.port, async ()=>{
     console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
     console.log(new Date());
+    console.log(ObjectId(16, 20));
 })
 
 
 /* ------------- GET ENTRIES FROM DATABASE ---------------- */
 
-router.get('/auth/*', async (req, res) => {
+router.get('/auth', async (req, res) => {
+    let get_token;
+    let new_token = ObjectId();
+    let new_id = ObjectId(16, 20);
+    const new_date = new Date();
+    let created_at;
     try{
         await client.connect();
-        let get_token = await db.collection('auth').find({"_ip": req.ip}).toArray();
-        if(get_token.length === 0){
-            //console.log('inserted');
-            return db.collection('auth').insertOne({"_ip": req.ip});
+
+        if(req.header('U_id') !== undefined && req.header('U_id') !== ''){
+            get_token = await db.collection('AUTH').find({"user._id": req.header('U_id'), "user._ip": req.ip}).toArray();
+            if(get_token.length === 0){
+                new_id = req.header('U_id');
+                created_at = new_date;
+                return await db.collection('AUTH').insertOne({"date": new_date, user:{"_id": req.header('U_id'), "_token": new_token, "_ip": req.ip}});
+            }
         }
+        else{
+            get_token = await db.collection('AUTH').find({"user._ip": req.ip}).toArray();
+            if(get_token.length > 0){
+                const update_token = await db.collection('AUTH').updateMany(
+                    {"user._id": get_token[0].user._id, "user._ip": req.ip},
+                    {"$set": {"user._token": new_token}}
+                );
+                new_id = get_token[0].user._id;
+                created_at = get_token[0].date;
+                return update_token;
+            }
+        }
+        
+        if(get_token.length === 0){
+            created_at = new_date;
+            return await db.collection('AUTH').insertOne({"date": new_date, user:{"_id": new_id, "_token": new_token, "_ip": req.ip}});
+        }
+        new_token = get_token[0].user._token;
+        new_id = get_token[0].user._id;
+        created_at = get_token[0].date;
     }catch(e){
         console.log(e);
         return res.sendStatus(500);
     }finally{
-        res.setHeader('X-Xsrf-Token', 'correct');
-        return res.status(200).send({token: 'correct'});
+        res.setHeader('X-Xsrf-Token', 'sent');
+        return res.status(200).send({token: new_token, user_id: new_id, date: new_date, created_at: created_at});
     }
 })
 
@@ -154,10 +191,6 @@ router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specifie
 
 router.get('/upd_time/', async(req, res)=>{
     let updateTimeData;
-
-    const ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => // >>
-    s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h)); // ID for not updated records <<
-
     try{
         await client.connect();
         updateTimeData = await db.collection('lastUpdateTime').find().toArray();

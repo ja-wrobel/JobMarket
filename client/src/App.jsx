@@ -2,6 +2,7 @@ import {Routes, Route} from "react-router-dom";
 import React from 'react'
 import "./css/App.css";
 import Header from "./components/Header";
+import Footer from './components/Footer.jsx';
 import Main from "./routes/Main";
 import Sorted from "./routes/Sorted";
 import SortedByTech from "./routes/SortedByTech";
@@ -18,7 +19,7 @@ function App() {
         </Routes>
         <Routes>
             <Route path="/" element={<Main/>}/>
-            <Route path="/_info/*" element={<Main/>}/>
+            <Route path="/_info/:type" element={<Main/>}/>
             <Route path="/sort/:spec/*" element={<Sorted/>}/>
             <Route path="/tech/:type/*" element={<SortedByTech/>}/>
             <Route path="/sort/:spec/tech/:type/*" element={<Sorted/>}/>
@@ -38,6 +39,9 @@ function App() {
         </div>
         <Routes>
             <Route path="/*" element={<Page_up_down/>}/>
+        </Routes>
+        <Routes>
+            <Route path="/*" element={<Footer/>}/>
         </Routes>
     </div>
     </>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import validateString from "../hooks/validateString";
 import "../css/TechInfo.css";
-import forgeRequest from "../hooks/forgeRequest";
+import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
 import DOMPurify from 'dompurify';
 import ErrorMessage from "../components/ErrorMessage";
 
