@@ -5,7 +5,7 @@ require('dotenv').config();
 const router = express.Router();
 const path = require('path');
 const helmet = require('helmet');
-const { MongoClient, ServerApiVersion, Timestamp } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const env_var = {
     db_uri: process.env.URI_DATABASE,
@@ -78,15 +78,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
 
-app.listen(env_var.port, async ()=>{
+const server = app.listen(env_var.port, async ()=>{
     console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
     console.log(new Date());
     console.log(tokenControl.generateObjectId(16,20));
 })
+server.maxHeadersCount = 0; // Websocket vulnerability workaround. Could be repaired by puppeteer update as well, 
+                            // but in new puppeteer version xpath is not supported, so I would need to rewrite scraping.
 
-
-/* ------------- GET ENTRIES FROM DATABASE ---------------- */
-
+/* AUTHORIZE */
 router.get('/auth', async (req, res) => {
 
     const user = new tokenControl( req, res, db.collection('auth') );
@@ -115,7 +115,7 @@ router.get('/auth', async (req, res) => {
     }
 })
 
-
+/* ------------- GET ENTRIES FROM DATABASE ---------------- */
 router.get('/', async (req, res)=>{
     try{
         await client.connect();
@@ -158,7 +158,6 @@ router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specifie
 
 
 /* -------------- SET LAST UPDATE TIME OF ENTRIES ----------------*/
-
 router.get('/upd_time/', async(req, res)=>{
     let updateTimeData;
     try{
@@ -176,7 +175,6 @@ router.get('/upd_time/', async(req, res)=>{
 
 
 /* ---------SEARCH FOR NEW ENTRIES USING PYTHON SCRIPT -------------------*/
-
 const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
 const isReqBodyOk = require('./functions/search_for_off/isReqBodyOk.js');
 
@@ -207,7 +205,6 @@ router.post('/search_for_off', async (req, res)=>{
 
 
 /* -----------------PUPPETEER - SCRAPE DATA FROM WIKIPEDIA----------------------- */
-
 const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
 
 router.get('/more_info/:key', async(req, res)=>{ 
