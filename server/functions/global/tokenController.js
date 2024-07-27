@@ -1,5 +1,6 @@
+const cryptoControl = require('./cryptoController');
 
-class tokenControl{
+class tokenControl extends cryptoControl{
     client_id = tokenControl.generateObjectId(16,20);
     token = tokenControl.generateObjectId();
     new_date = new Date();
@@ -7,6 +8,7 @@ class tokenControl{
     isMarkedForUpdate = false;
 
     /**
+     * @extends cryptoControl
      * @param {Request} req 
      * @param {Response} res 
      * @param {Db} db - `db.collection('${x}')` collection needs to be specified when constructed
@@ -20,12 +22,12 @@ class tokenControl{
      * @method `generateObjectId(number|number|Math|Date|function)`
      */
     constructor(req, res, db){
+        super(1000, 64, 16, req.path);
         this.req = req;
         this.res = res;
         this.db = db;
-        this.#setClientIdFromHeader();
+        this.#setClientIdFromHeader();        
     }
-
     #setClientIdFromHeader(){
         if(this.req.header('U_id') !== undefined && this.req.header('U_id') !== ''){
             this.isMarkedForUpdate = true;
@@ -42,22 +44,20 @@ class tokenControl{
         this.created_at = created_at;
     }
     getUser(){
-        return {token: this.token, user_id: this.client_id, date: this.new_date, created_at: this.created_at};
+        return {token: this.token.toString(), user_id: this.client_id, date: this.new_date, created_at: this.created_at};
     }
-
     /** 
      * Searches for document with filter:
      * - only `req.ip` when token is marked for update
      * - `client_id`, `req.ip` when token is NOT marked for update
      * @returns {Promise<[]>}  array of mongo find cursor in Promise
-     */
+    */
     async findUser(){
         if(this.isMarkedForUpdate){
             return await this.db.find({"user._ip": this.req.ip}).toArray();
         }
         return await this.db.find({"user._id": this.client_id, "user._ip": this.req.ip}).toArray();
     }
-
     /** 
      * Updates token and date of last update, both taken from class
      * @param {string} id corresponding to `req.ip`
@@ -69,7 +69,6 @@ class tokenControl{
             {"$set": {"token._token": this.token, "token._updated_at": this.new_date}}
         );
     }
-
     /** 
      * Inserts user according to `this` 
      * @returns {Promise<mongodb.Document>}
@@ -89,7 +88,6 @@ class tokenControl{
         );
     }
 
-
     // GET
     getClientId(){
         return this.client_id;
@@ -107,9 +105,7 @@ class tokenControl{
         return this.isMarkedForUpdate;
     }
 
-
     // SET
-
     /** Generates new client_id */
     setNewClientId(){
         this.client_id = tokenControl.generateObjectId(16,20);
@@ -125,9 +121,7 @@ class tokenControl{
         this.created_at = date;
     }
 
-
     // STATIC
-
     /**
      * creates token - same format as _id in mongo
      * @param {number} h Integer between 2 and 18 sets type of number conversion and randomness
@@ -142,4 +136,4 @@ class tokenControl{
         s(d.now() / 10000000) + ' '.repeat(length).replace(/./g, () => s(m.random() * h)); 
 }
 
-module.exports = tokenControl;
+module.exports = {tokenControl, cryptoControl};

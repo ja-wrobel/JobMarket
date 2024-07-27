@@ -66,7 +66,7 @@ function setCorsHeaders(req, res, next) {
 //
 //
 const secureXSRF = require("./functions/global/secureXSRF.js");
-const tokenControl = require("./functions/global/tokenController.js");
+const {tokenControl} = require("./functions/global/tokenController.js");
 
 app.use(cors(corsOptions));
 app.use(setCorsHeaders);
@@ -81,7 +81,6 @@ app.use('/', router);
 const server = app.listen(env_var.port, async ()=>{
     console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
     console.log(new Date());
-    console.log(tokenControl.generateObjectId(16,20));
 })
 server.maxHeadersCount = 0; // Websocket vulnerability workaround. Could be repaired by puppeteer update as well, 
                             // but in new puppeteer version xpath is not supported, so I would need to rewrite scraping.
@@ -110,6 +109,7 @@ router.get('/auth', async (req, res) => {
         console.log(e);
         return res.sendStatus(500);
     }finally{
+        user.token = user.encrypt(user.token, true);
         res.setHeader('X-Xsrf-Token', 'sent');
         return res.status(200).send( user.getUser() );
     }
