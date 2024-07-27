@@ -15,11 +15,15 @@ export default async function finalizeRequest(userAuthenticated, METHOD, body_co
     if( !userAuthenticated.isValid() ){
         return 404;
     }
+    let token = userAuthenticated.getToken();
+    token = userAuthenticated.decrypt(token, true).toString();
+    token = userAuthenticated.encrypt(token, false);
+
     return await (fetch(`${uri}:${port}${userAuthenticated.getPath()}`, {
         method: METHOD,
         headers: {
             'Content-Type': 'application/json',
-            'Xsrf-Token': userAuthenticated.getToken(),
+            'Xsrf-Token': token,
             'U_id': userAuthenticated.getID()
         },
         mode: 'cors',

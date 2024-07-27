@@ -1,5 +1,4 @@
-import { authorizationControl } from "./authorizationController";
-
+import { authorizationControl, cryptoControl } from "./authorizationController";
 /**
  * Fetches new token
  * @param {string} uri 
@@ -13,6 +12,9 @@ export default async function authorizeUser(uri, port, route, userAuthenticated)
         const user = new authorizationControl();
         return await authorizationControl.waitForAuthorization(user, route);
     }
+    let token = import.meta.env.VITE_AUTH_TOKEN;
+    const crypt = new cryptoControl(1000, 64, 16, route);
+    token = crypt.encrypt(token, true);
 
     localStorage.setItem('auth_in_progress', 'true');
 
@@ -20,7 +22,8 @@ export default async function authorizeUser(uri, port, route, userAuthenticated)
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'U_id': `${userAuthenticated !== undefined ? userAuthenticated.getID() : ''}`
+            'U_id': `${userAuthenticated !== undefined ? userAuthenticated.getID() : ''}`,
+            'Xsrf-Token': token
         },
         mode: 'cors'
     })
