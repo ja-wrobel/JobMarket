@@ -106,7 +106,7 @@ def add_new_id(IDArr, techArr):
                 flag = True
                 break
         if flag == False:
-            db.ids.insert_one({"ID": id[0]})
+            db.ids.insert_one({"ID": id[0], "date": datetime.datetime.now(tz=datetime.timezone.utc)})
 
 def count(techArr, techCount):
     for k, v in techArr.items():
