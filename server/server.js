@@ -87,7 +87,7 @@ server.maxHeadersCount = 0; // Websocket vulnerability workaround. Could be repa
 
 /* AUTHORIZE */
 router.get('/auth', async (req, res) => {
-
+    let error = false;
     const user = new tokenControl( req, res, db.collection('auth') );
     try{
         await client.connect();
@@ -107,16 +107,19 @@ router.get('/auth', async (req, res) => {
         user.insertUser();
     }catch(e){
         console.log(e);
-        return res.sendStatus(500);
+        error = true;
     }finally{
-        user.token = user.encrypt(user.token, true);
-        res.setHeader('X-Xsrf-Token', 'sent');
+        if(error) return res.status(404).end();
+
+        user.token = user.encrypt(user.token);
+
         return res.status(200).send( user.getUser() );
     }
 })
 
 /* ------------- GET ENTRIES FROM DATABASE ---------------- */
 router.get('/', async (req, res)=>{
+    let error = false;
     try{
         await client.connect();
         let date = new Date();
@@ -127,9 +130,10 @@ router.get('/', async (req, res)=>{
         }
     }catch(e){
         console.log(e);
-        res.status(500).end();
+        error = true;
     }
     finally{
+        if(error) return res.status(404).end();
         try{
             let display = await db.collection('langsCount').find({}).toArray();
             display.sort((a,b) => a.value - b.value);
@@ -159,6 +163,7 @@ router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specifie
 
 /* -------------- SET LAST UPDATE TIME OF ENTRIES ----------------*/
 router.get('/upd_time/', async(req, res)=>{
+    let error = false;
     let updateTimeData;
     try{
         await client.connect();
@@ -166,8 +171,9 @@ router.get('/upd_time/', async(req, res)=>{
 
     }catch(e){
         console.log(e);
-        res.status(500).end();
+        error = true;
     }finally{
+        if(error) return res.status(404).end();
         res.status(200).send(updateTimeData);
     }
 });
@@ -206,6 +212,7 @@ router.post('/search_for_off', async (req, res)=>{
 
 /* -----------------PUPPETEER - SCRAPE DATA FROM WIKIPEDIA----------------------- */
 const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
+const isReqParamOk = require("./functions/more_info/isReqParamOk.js"); // <- TODO <- // 
 
 router.get('/more_info/:key', async(req, res)=>{ 
     longTermRateLimit.consume(req.ip, 40)

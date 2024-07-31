@@ -6,15 +6,15 @@ import { authorizationControl, cryptoControl } from "./authorizationController";
  * @param {string} route 
  * @param {authorizationControl} userAuthenticated 
  */
-export default async function authorizeUser(uri, port, route, userAuthenticated){
+export default async function authorizeRequest(uri, port, route, userAuthenticated){
 
     if(localStorage.getItem('auth_in_progress') === 'true'){
         const user = new authorizationControl();
         return await authorizationControl.waitForAuthorization(user, route);
     }
-    let token = import.meta.env.VITE_AUTH_TOKEN;
-    const crypt = new cryptoControl(1000, 64, 16, route);
-    token = crypt.encrypt(token, true);
+    let token = new Date().getTime();
+    const crypt = new cryptoControl(1000, 64, 16);
+    token = crypt.encrypt(token);
 
     localStorage.setItem('auth_in_progress', 'true');
 

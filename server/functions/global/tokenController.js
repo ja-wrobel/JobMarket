@@ -22,7 +22,7 @@ class tokenControl extends cryptoControl{
      * @method `generateObjectId(number|number|Math|Date|function)`
      */
     constructor(req, res, db){
-        super(1000, 64, 16, req.path);
+        super(1000, 64, 16);
         this.req = req;
         this.res = res;
         this.db = db;

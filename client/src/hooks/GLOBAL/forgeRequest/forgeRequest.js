@@ -1,7 +1,7 @@
 const port = import.meta.env.VITE_SERVER_PORT || 8080;
 const uri = import.meta.env.VITE_SERVER_URL || "http://localhost";
 import {authorizationControl} from "./authorizationController";
-import authorizeUser from "./authorizeUser";
+import authorizeRequest from "./authorizeRequest";
 import finalizeRequest from "./finalizeRequest";
 
 /**
@@ -32,7 +32,7 @@ export default async function forgeRequest(route, METHOD, body_content){
 
     if(userAuthenticated.getID() === '' && localStorage.getItem('auth_in_progress') !== 'done' && !isActive){
 
-        const user = await authorizeUser(uri, port, route);
+        const user = await authorizeRequest(uri, port, route);
         if(!user){
             return 404;
         }
@@ -41,7 +41,7 @@ export default async function forgeRequest(route, METHOD, body_content){
     }
     else if(userAuthenticated.getID() !== '' && localStorage.getItem('auth_in_progress') !== 'done' && !isActive){
 
-        const user = await authorizeUser(uri, port, route, userAuthenticated);
+        const user = await authorizeRequest(uri, port, route, userAuthenticated);
         if(!user){
             return 404;
         }

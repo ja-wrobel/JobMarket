@@ -1,7 +1,6 @@
 /**
  * Fetches desired data for authorized user
  * @param {object} userAuthenticated authorizationController
- * @param {string} route 
  * @param {string} METHOD 
  * @param {object|undefined} body_content 
  * @param {string} uri 
@@ -15,15 +14,12 @@ export default async function finalizeRequest(userAuthenticated, METHOD, body_co
     if( !userAuthenticated.isValid() ){
         return 404;
     }
-    let token = userAuthenticated.getToken();
-    token = userAuthenticated.decrypt(token, true).toString();
-    token = userAuthenticated.encrypt(token, false);
 
     return await (fetch(`${uri}:${port}${userAuthenticated.getPath()}`, {
         method: METHOD,
         headers: {
             'Content-Type': 'application/json',
-            'Xsrf-Token': token,
+            'Xsrf-Token': userAuthenticated.getToken(),
             'U_id': userAuthenticated.getID()
         },
         mode: 'cors',

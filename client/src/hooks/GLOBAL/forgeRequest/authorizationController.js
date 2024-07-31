@@ -2,14 +2,14 @@ import cryptoControl from "./cryptoController";
 
 /**
  * Creates, encodes, decodes, modifies, stores and tracks if XSRF_TOKEN is expired. 
- * - Tokens expire every 10 minutes
+ * - Tokens expire every 10 seconds
  */
 class authorizationControl extends cryptoControl{
     /**
      * @extends cryptoControl
      * @param {string} user_id OID created for user by server
      * @param {string} token XSRF-Token
-     * @param {Date} expiration_date of token  + 10 minutes by default
+     * @param {Date} expiration_date of token  + 10 seconds by default
      * @param {Date} user_created_at user date in mongo
      * @param {string} path Request path, each path will generate a bit different and unique token
      * @param {boolean} isTokenActive  `false` by default, set to `true` if token is active
@@ -22,10 +22,10 @@ class authorizationControl extends cryptoControl{
      * @static @method waitForAuthorization()
      */
     constructor(user_id = '', token = '', expiration_date = new Date(0), user_created_at = new Date(0), path = '', isTokenActive = false){
-        super(1000, 64, 16, path);
+        super(1000, 64, 16);
         this.user_id = user_id;
         this.token = token; 
-        this.expiration_date = new Date(expiration_date.setMinutes( expiration_date.getMinutes() + 2 ) );
+        this.expiration_date = new Date(expiration_date.setSeconds( expiration_date.getSeconds() + 10 ) );
         this.user_created_at = new Date(user_created_at);
         this.path = path;
         this.isTokenActive = isTokenActive;
@@ -42,7 +42,6 @@ class authorizationControl extends cryptoControl{
         this.expiration_date = user.getExpirationDate();
         this.user_created_at = user.getUserCreatedAt();
         this.path = user.getPath();
-        this.setRoute(user.getPath());
         this.isTokenActive = user.getIsTokenActive();
     }
     constructFromLocalData(){
@@ -68,9 +67,9 @@ class authorizationControl extends cryptoControl{
     setToken(token){
         this.token = token;
     }
-    /** Sets to `date` + 10 minutes @param {Date} date */
+    /** Sets to `date` + 10 seconds @param {Date} date */
     setExpirationDate(date){
-        this.expiration_date = new Date(date.setMinutes( date.getMinutes() + 2 ) );
+        this.expiration_date = new Date(date.setSeconds( date.getSeconds() + 10 ) );
     }
     /** @param {Date} date  */
     setUserCreatedAt(date){
@@ -78,7 +77,6 @@ class authorizationControl extends cryptoControl{
     }
     setPath(path){
         this.path = path;
-        this.ROUTE = path;
     }
     setIsTokenActive(bool){
         this.isTokenActive = bool;
@@ -108,7 +106,7 @@ class authorizationControl extends cryptoControl{
     }
     getUserExpirationDate(){
         const date = new Date(this.user_created_at);
-        return new Date(date.setMinutes( date.getMinutes() + 61));    // mongo will delete user after this date
+        return new Date(date.setMinutes( date.getMinutes() + 60));    // mongo will delete user after this date
     }
     getPath(){
         return this.path;
