@@ -2,14 +2,15 @@ import cryptoControl from "./cryptoController";
 
 /**
  * Creates, encodes, decodes, modifies, stores and tracks if XSRF_TOKEN is expired. 
- * - Tokens expire every 10 seconds
+ * - Tokens expire every x seconds
  */
 class authorizationControl extends cryptoControl{
+    #token_lifespan = 20; 
     /**
      * @extends cryptoControl
      * @param {string} user_id OID created for user by server
      * @param {string} token XSRF-Token
-     * @param {Date} expiration_date of token  + 10 seconds by default
+     * @param {Date} expiration_date of token  + 20 seconds by default
      * @param {Date} user_created_at user date in mongo
      * @param {string} path Request path, each path will generate a bit different and unique token
      * @param {boolean} isTokenActive  `false` by default, set to `true` if token is active
@@ -25,7 +26,7 @@ class authorizationControl extends cryptoControl{
         super(1000, 64, 16);
         this.user_id = user_id;
         this.token = token; 
-        this.expiration_date = new Date(expiration_date.setSeconds( expiration_date.getSeconds() + 10 ) );
+        this.expiration_date = new Date(expiration_date.setSeconds( expiration_date.getSeconds() + this.#token_lifespan ) );
         this.user_created_at = new Date(user_created_at);
         this.path = path;
         this.isTokenActive = isTokenActive;
@@ -69,7 +70,7 @@ class authorizationControl extends cryptoControl{
     }
     /** Sets to `date` + 10 seconds @param {Date} date */
     setExpirationDate(date){
-        this.expiration_date = new Date(date.setSeconds( date.getSeconds() + 10 ) );
+        this.expiration_date = new Date(date.setSeconds( date.getSeconds() + this.#token_lifespan ) );
     }
     /** @param {Date} date  */
     setUserCreatedAt(date){

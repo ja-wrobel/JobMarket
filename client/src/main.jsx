@@ -12,11 +12,11 @@ const exp = {
   root2: sRoot
 }
 root.render(
-    <React.StrictMode>
+    //<React.StrictMode>
         <BrowserRouter>
             <App />
         </BrowserRouter>
-    </React.StrictMode>
+    //</React.StrictMode>
 )
 sRoot.render()
 

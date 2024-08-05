@@ -1,7 +1,10 @@
+
 export default function SearchInput(){
+
     function escapeRegex(string) {
         return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
     }
+
     function search(){
         let inputVal = document.getElementById('search-input').value.toLowerCase();
         let list = document.getElementById('list');
@@ -26,11 +29,13 @@ export default function SearchInput(){
             }
         }
     }
+
     function clear(){
         const input = document.getElementById('search-input');
         input.value = '';
         search();
     }
+
     return(
         <>
         <input spellCheck="false" type="text" id="search-input" style={
@@ -43,6 +48,7 @@ export default function SearchInput(){
                 marginRight: '3px'
             }
         } placeholder='What you seek?.. "strict"' onChange={search}></input>
+        
         <input type="button" value={'X'} style={
             {
                 border: '2px groove rgb(35, 112, 255, 0.8)',
@@ -52,10 +58,12 @@ export default function SearchInput(){
                 color: 'rgb(20, 190, 240)',
                 cursor: 'pointer'
             }
-        }onMouseEnter={(e)=>{e.target.style.border = '2px groove rgb(80, 186, 243, 0.8)';e.target.style.backgroundColor = 'rgb(34 81 173 / 58%)';}}
+        }
+        onMouseEnter={(e)=>{e.target.style.border = '2px groove rgb(80, 186, 243, 0.8)';e.target.style.backgroundColor = 'rgb(34 81 173 / 58%)';}}
         onMouseLeave={(e)=>{e.target.style.border = '2px groove rgb(35, 112, 255, 0.8)';e.target.style.backgroundColor = 'rgba(25, 25, 112, 0.58)';}}
         onClick={clear}
         />
+
         </>
     );
 }

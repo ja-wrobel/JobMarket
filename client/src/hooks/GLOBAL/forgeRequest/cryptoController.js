@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 
-// TODO: change approach of storing those keys, they need to be secret and secure
 class cryptoControl{
     #KEY_LENGTH = Number(import.meta.env.VITE_KEY_LENGTH);
     #ALGORITHM = import.meta.env.VITE_ALGORITHM;

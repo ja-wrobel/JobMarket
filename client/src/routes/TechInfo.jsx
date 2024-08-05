@@ -7,7 +7,6 @@ import DOMPurify from 'dompurify';
 import ErrorMessage from "../components/ErrorMessage";
 
 
-
 function TechInfo(){
     const [info, setInfo] = useState([]);
     let {name} = useParams();
@@ -15,20 +14,20 @@ function TechInfo(){
     let isParameterValid = false;
 
     const setData = async () => {
-
         if(name === undefined){ return console.log('Something went wrong...'); }
 
         isRequestInProgress = true;
-        const mask = document.getElementsByClassName('li_element');
+        const list_elements = document.getElementsByClassName('li_element');
         const loading_animation = document.getElementById('loading');
-
-        for(const e of mask){
+        // disable clicking new list element when another is still processed by server
+        for(const e of list_elements){
             if(e.getAttribute("accesskey") === name){
                 isParameterValid = true;
             }
             e.style.pointerEvents = 'none';
         }
-        if(!isParameterValid){ 
+        // user set name manually in url, second condition is necessary bcs after refresh li_element are not yet loaded at this point
+        if(!isParameterValid && list_elements !== undefined){ 
             setInfo({first_p: "Invalid parameter..."});
             return console.log("Invalid parameter...")
         }
@@ -40,21 +39,23 @@ function TechInfo(){
 
         await forgeRequest(`/more_info/${name}`, 'GET')
         .then(async data=>{
+            // handle error
             if(typeof data === 'number'){
                 loading_animation.className = '';
 
-                for(const e of mask){e.style.pointerEvents = '';}
+                for(const e of list_elements){e.style.pointerEvents = '';}
 
                 loading_animation.style.display = 'none';
                 setInfo(data);
                 isRequestInProgress = false;
                 return console.log('Something went wrong...');
             }
+            // handle response.json
             name = validateString(name);
             loading_animation.className = '';
             loading_animation.style.display = 'none';
 
-            for(const e of mask){e.style.pointerEvents = '';}
+            for(const e of list_elements){e.style.pointerEvents = '';}
 
             if(data.second_p === ''){
                 data.first_p = `Couldn't find article related to this subject...`;

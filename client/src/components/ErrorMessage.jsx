@@ -1,14 +1,18 @@
+import handleErrorByStatus from "../hooks/GLOBAL/handleErrorByStatus"
+
 export default function ErrorMessage(props){
+
     return(
         <>
         <p style={{fontSize: '1.5rem', marginBottom: '10rem'}}>HTTP ERROR {props.status}
-            {
-                props.status === 429 ? ': Too Many Requests' : ': Something went wrong...'
-            }
+            {handleErrorByStatus(props.status)}
         </p>
         <p>
         {
             props.status === 429 && '<<Try again in few seconds, if same issue appears - try in one hour>>'
+        }
+        {
+            props.status === 401 && '<<Try to reload the page>>'
         }
         </p>
         </>

@@ -7,6 +7,7 @@ module.exports = function (client, db, options){
         let valid_token;
         let received_token;
         let exp_date;
+        const new_date = new Date();
         const crypt = new cryptoControl(1000, 64, 16);
         // Handle authorization request
         if(is_path_auth){
@@ -31,13 +32,14 @@ module.exports = function (client, db, options){
                 return next();
             }
         } 
-        // Find user in DB
+        // Find user in DB (casual request)
         try{
             await client.connect();
             valid_token = await db.collection('auth').find({"user._id": req.header('U_id'), "user._ip": req.ip}).toArray();
             if(valid_token.length > 0){
-                exp_date = new Date(valid_token[0].token._updated_at.setSeconds(valid_token[0].token._updated_at.getSeconds() + 15));
+                exp_date = new Date(valid_token[0].token._updated_at.setSeconds(valid_token[0].token._updated_at.getSeconds() + 25));
             }
+            received_token = crypt.decrypt( req.header('Xsrf-Token') ).toString();
         }
         catch(e){
             console.log(`XSRF Error: \n${e}`);
@@ -50,7 +52,7 @@ module.exports = function (client, db, options){
                 console.log(`User not found: ${req.ip}`);
                 return res.sendStatus(401);
             }
-            else if( exp_date.getTime() < new Date().getTime() ){
+            else if( exp_date.getTime() < new_date.getTime() ){
                 console.log(`Token expired: ${req.ip}`);
                 return res.sendStatus(401);
             }
@@ -59,23 +61,12 @@ module.exports = function (client, db, options){
                 return res.sendStatus(401);
             }
         }
-        // When headers are ok, user exists and token didn't expire - decrypt received token and compare it
-        try{
-            received_token = crypt.decrypt( req.header('Xsrf-Token') ).toString();
-        }
-        catch(e){
-            console.log(`Error while decrypting!\nIP: ${req.ip}\nError: ${e}`);
-            error = true;
-        }
-        finally{
-            if(error) return res.sendStatus(401);
+        // When headers are ok, user exists and token didn't expire - compare tokens
 
-            if( received_token !== valid_token[0].token._token){
-                console.log(`Invalid Xsrf-Token by: ${req.ip}`);
-                return res.sendStatus(401);
-            } 
-            
-            next();
-        }
+        if( received_token != valid_token[0].token._token){
+            console.log(`Invalid Xsrf-Token by: ${req.ip}`);
+            return res.sendStatus(401);
+        }  
+        next();
     }
 }

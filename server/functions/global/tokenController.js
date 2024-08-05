@@ -54,9 +54,9 @@ class tokenControl extends cryptoControl{
     */
     async findUser(){
         if(this.isMarkedForUpdate){
-            return await this.db.find({"user._ip": this.req.ip}).toArray();
+            return await this.db.find({"user._id": this.client_id, "user._ip": this.req.ip}).toArray();      
         }
-        return await this.db.find({"user._id": this.client_id, "user._ip": this.req.ip}).toArray();
+        return await this.db.find({"user._ip": this.req.ip}).toArray();
     }
     /** 
      * Updates token and date of last update, both taken from class
@@ -64,8 +64,8 @@ class tokenControl extends cryptoControl{
      * @returns {Promise<mongodb.Document>} updateMany
     */
     async updateUser(id){
-        return await this.db.updateMany( 
-            {"user._id": id, "user._ip": this.req.ip}, 
+        return await this.db.updateOne( 
+            {"user._id": id}, 
             {"$set": {"token._token": this.token, "token._updated_at": this.new_date}}
         );
     }

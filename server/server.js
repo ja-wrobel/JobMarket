@@ -91,19 +91,14 @@ router.get('/auth', async (req, res) => {
     const user = new tokenControl( req, res, db.collection('auth') );
     try{
         await client.connect();
-        const data = await user.findUser()
+        const data = await user.findUser();
 
-        if( data.length > 0 && user.getIsMarkedForUpdate() ){
-            user.updateUser(data[0].user._id);
+        if( data.length > 0 ){
+            user.updateUser(data[0].user._id, data[0].token._token);
             user.setClientId(data[0].user._id);
             user.setCreatedAt( new Date( data[0].date ) );
             return user;
         }
-        if( data.length > 0 && !user.getIsMarkedForUpdate() ){
-            user.setUser( data[0].user._id, data[0].token._token, new Date( data[0].date ) );
-            return user;
-        }
-
         user.insertUser();
     }catch(e){
         console.log(e);
@@ -119,6 +114,7 @@ router.get('/auth', async (req, res) => {
 
 /* ------------- GET ENTRIES FROM DATABASE ---------------- */
 router.get('/', async (req, res)=>{
+    let entries;
     let error = false;
     try{
         await client.connect();
@@ -135,33 +131,40 @@ router.get('/', async (req, res)=>{
     finally{
         if(error) return res.status(404).end();
         try{
-            let display = await db.collection('langsCount').find({}).toArray();
-            display.sort((a,b) => a.value - b.value);
-            display.reverse();
-            res.status(200).send(display);
+            entries = await db.collection('langsCount').find({}).toArray();
+            entries.sort((a,b) => a.value - b.value);
+            entries.reverse();
         }catch(e){
             console.log(e);
-            res.status(500).end();
+            error = true;
+        }
+        finally{
+            if(error) return res.status(404).end();
+            return res.status(200).send(entries);
         }
     }
 })
 
 router.get(`/specs/:key`, async (req,res)=>{ // Searches for techs with specified specialisation
+    let entries;
+    let error = false;
     try{
         await client.connect();
-        let entries = await db.collection(req.params.key).find({}).toArray();
+        entries = await db.collection(req.params.key).find({}).toArray();
         entries.sort((a,b) => a.value - b.value);
         entries.reverse();
-        res.status(200).send(entries);
     }catch(e){
         console.log(e);
-        res.status(500).end();
+        error = true;
+    }finally{
+        if(error) return res.status(404).end();
+        return res.status(200).send(entries);
     }
 });
 
 
 
-/* -------------- SET LAST UPDATE TIME OF ENTRIES ----------------*/
+/* -------------- GET LAST UPDATE TIME OF ENTRIES ----------------*/
 router.get('/upd_time/', async(req, res)=>{
     let error = false;
     let updateTimeData;

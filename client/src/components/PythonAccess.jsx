@@ -2,6 +2,7 @@ import useWindowControl from "../hooks/windowControl";
 import "../css/PyAccess.css";
 import PythonAccess_button from "./buttons/PythonAccess_button";
 import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
+import handleErrorByStatus from "../hooks/GLOBAL/handleErrorByStatus";
 
 function PythonAccess(props){
     const windowControler = useWindowControl();
@@ -9,24 +10,27 @@ function PythonAccess(props){
     
     async function searchButton(){
         const form = document.getElementById('PyAccess-form');
+        // in case user didn't choose type
         if(form.specs.value === ''){
             warning.innerHTML = "You really should choose specialisation...";
             warning.style.display = "block";
             return 0;
         }
+        // clears innerhtml so it will be only circle spinning, not text 
         warning.innerHTML = '';
-        const req_body = {
-            specs: form.specs.value
-        };
+        // disable all actions while server is processing request. Show loading animation
         const mask = document.getElementById('mask');
         mask.style.display = 'block';
         warning.className = 'load';
         warning.style.display = 'block';
         
+        const req_body = {
+            specs: form.specs.value
+        };
         await forgeRequest(`/search_for_off`, 'POST', req_body)
         .then((response) => {
             if(!response.ok){
-                warning.innerHTML = `Something went wrong... (HTTP Error: ${response.status===429 ? '429) - Too Many Requests - try again in one hour' : `${response.status})`}`;
+                warning.innerHTML = `(HTTP Error${response.status===429 ? ': 429) - Too Many Requests - try again in one hour' : handleErrorByStatus(response.status) }`;
                 warning.className = '';
                 mask.style.display = 'none';
                 return;
@@ -39,12 +43,13 @@ function PythonAccess(props){
             }
         })
         .catch(e => {
-            warning.innerHTML = `Something went wrong... (HTTP Error: ${e})`;
+            warning.innerHTML = `Something went wrong...`;
             warning.className = '';
             mask.style.display = 'none';
             return console.log(e);
         });
     }
+
     function closeButton(){
         document.getElementById('PythonAccess').className = `PythonAccess ${windowControler}`;
         let radio = document.getElementsByClassName('PyAccess-radio');
@@ -56,6 +61,7 @@ function PythonAccess(props){
         }
         warning.style.fontSize = 'larger';
     }
+
     return (
         <>
             <div className={`PythonAccess ${windowControler}`} id='PythonAccess'>
