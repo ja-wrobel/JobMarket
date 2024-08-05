@@ -3,6 +3,7 @@ const isComputerSciencePage = require("./isComputerSciencePage.js");
 const correctLinks = require("./correctLinks.js");
 // todo: could be easier to read and understand if it was rewrited as a class
 async function scrapeWikipedia(tech, response) {
+    let error = false;
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     let content = {
@@ -58,9 +59,12 @@ async function scrapeWikipedia(tech, response) {
         });
     } catch (e) {
         console.error(`Error processing ${tech}: ${e}`);
-        return await response.status(404).end();
+        error = true;
     } finally {
         await browser.close();
+        
+        if(error) return response.status(404).end();
+
         return await response.status(200).send(content);
     }
 }

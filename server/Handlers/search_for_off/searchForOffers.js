@@ -4,6 +4,7 @@ const py_script = process.env.PYTHON_SCRIPT_PATH;
 const position_types = ["backend", "frontend", "fullstack", "gamedev"];
 
 async function searchForOffers(position, response, req_ip, db){
+    let error = false;
     try{
         if(position === undefined){
             return response.status(404).end();
@@ -31,8 +32,10 @@ async function searchForOffers(position, response, req_ip, db){
         }
     }catch(e){
         console.log(e);
-        return response.status(404).end(e);
+        error = true;
     };
+
+    if(error) return response.status(404).end();
 
     let options = {
         mode: 'text',
@@ -56,8 +59,10 @@ async function searchForOffers(position, response, req_ip, db){
             return await add_to_count;
         }catch(e){
             console.log(e);
-            return response.status(500).end();
+            error = true;
         }finally{
+            if(error) return response.status(404).end();
+
             await py.PythonShell.run('webscraper.py', options).then(messages=>{
                 console.log(messages.toString());
             });
@@ -65,8 +70,10 @@ async function searchForOffers(position, response, req_ip, db){
         
     }catch(e){
         console.log(e);
-        return response.status(404).end(e);
+        error = true;
     }finally{
+        if(error) return response.status(404).end();
+        
         return response.status(200).end();
     };   
 }

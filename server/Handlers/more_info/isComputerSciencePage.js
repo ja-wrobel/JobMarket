@@ -1,5 +1,6 @@
 
 async function isComputerSciencePage(page, response) {
+    let error = false;
     // Add keywords that indicate the page is related to computer science
     const computerScienceKeywords = ["Programming","programming", "Framework","framework", "Database","database", "Software","software", "Development","development"];
     let content;
@@ -8,8 +9,10 @@ async function isComputerSciencePage(page, response) {
         content = await page.evaluate(el => el.innerText, infoTable[0]);
     }catch(e){
         console.error(`Error processing ${tech}: ${e}`);
-        return await response.status(404).end();
+        error = true;
     }
+    if(error) return false;
+
     let keyword_count = 0;
     for(const keyword of computerScienceKeywords){
         const bool = await content.includes(keyword);
@@ -50,10 +53,11 @@ async function isComputerSciencePage(page, response) {
                     new_article_loaded = await page.waitForXPath('/html/body/div[2]/div/div[3]/main/div[1]/div/div[1]/nav/div[1]/div/ul/li[1]/a/span');
                 }catch(e){
                     console.error(`Error processing ${tech}: ${e}`);
-                    return await response.status(404).end();
+                    error = true;
                 }
                 finally{
-                    if(new_article_loaded)return true;
+                    if(error) return false;
+                    if(new_article_loaded) return true;
                     else{return false;}
                 }
             }
@@ -61,7 +65,8 @@ async function isComputerSciencePage(page, response) {
         return false;
     }catch(e) {
         console.error(`Error processing ${tech}: ${e}`);
-        return await response.status(404).end();
+        error = true;
     }
+    if(error) return false;
 }
 module.exports = isComputerSciencePage;
