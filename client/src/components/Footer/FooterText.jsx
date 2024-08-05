@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import exp from "../main";
-import PythonAccess from "./PythonAccess";
+import exp from "../../main.jsx";
+import PythonAccess from "../F_B_PythonAccess/PythonAccess.jsx";
 
 export default function FooterText(props){
     const boolArr = props.formBool;

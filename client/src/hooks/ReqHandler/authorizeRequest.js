@@ -1,4 +1,4 @@
-import { authorizationControl, cryptoControl } from "./authorizationController";
+import { authorizationControl, cryptoControl } from "./Controllers/authorizationController";
 /**
  * Fetches new token
  * @param {string} uri 

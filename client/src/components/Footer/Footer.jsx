@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import React from 'react'
-import "../css/Footer.css";
+import "./Footer.css";
 import '../index.css';
 import FooterText from "./FooterText.jsx";
-import processDate from "../hooks/Footer/processDate.js";
-import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest.js";
-import handleErrorByStatus from "../hooks/GLOBAL/handleErrorByStatus.js";
+import processDate from "../../hooks/Footer/processDate.js";
+import forgeRequest from "../../hooks/ReqHandler/forgeRequest.js";
+import handleErrorByStatus from "../../hooks/handleErrorByStatus.js";
 
 const types = ['backend', 'frontend', 'fullstack', 'gamedev'];
 

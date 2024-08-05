@@ -1,14 +1,14 @@
 import {Routes, Route} from "react-router-dom";
 import React from 'react'
 import "./css/App.css";
-import Header from "./components/Header";
-import Footer from './components/Footer.jsx';
-import Main from "./routes/Main";
-import Sorted from "./routes/Sorted";
-import SortedByTech from "./routes/SortedByTech";
-import TechInfo from "./routes/TechInfo";
-import Page_up_down from "./components/buttons/Page_up_down";
-import closeInfoTab from "./hooks/closeInfoTab";
+import Header from "./components/Header/Header.jsx";
+import Footer from './components/Footer/Footer.jsx';
+import Main from "./routes/Main.jsx";
+import Sorted from "./routes/Sorted.jsx";
+import SortedByTech from "./routes/SortedByTech.jsx";
+import TechInfo from "./routes/TechInfo.jsx";
+import Page_up_down from "./components/PageScroll_button.jsx";
+import closeInfoTab from "./hooks/closeInfoTab.js";
 
 function App() {
   return (

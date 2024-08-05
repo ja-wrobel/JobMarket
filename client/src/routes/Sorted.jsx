@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import validateString from "../hooks/validateString";
-import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
-import ListElement from "../components/ListElement";
-import ErrorMessage from "../components/ErrorMessage";
+import validateString from "../hooks/validateString.js";
+import forgeRequest from "../hooks/ReqHandler/forgeRequest.js";
+import ListElement from "../components/ListElement.jsx";
+import ErrorMessage from "../components/ErrorMessage.jsx";
 
 export default function Sorted(){
     const [entries, setEntries] = useState([]);

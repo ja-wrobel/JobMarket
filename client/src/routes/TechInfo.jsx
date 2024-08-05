@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import validateString from "../hooks/validateString";
+import validateString from "../hooks/validateString.js";
 import "../css/TechInfo.css";
-import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
+import forgeRequest from "../hooks/ReqHandler/forgeRequest.js";
 import DOMPurify from 'dompurify';
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage.jsx";
 
 
 function TechInfo(){

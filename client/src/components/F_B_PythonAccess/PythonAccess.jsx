@@ -1,8 +1,8 @@
-import useWindowControl from "../hooks/windowControl";
-import "../css/PyAccess.css";
-import PythonAccess_button from "./buttons/PythonAccess_button";
-import forgeRequest from "../hooks/GLOBAL/forgeRequest/forgeRequest";
-import handleErrorByStatus from "../hooks/GLOBAL/handleErrorByStatus";
+import useWindowControl from "../../hooks/PythonAccess/windowControl.js";
+import "./PyAccess.css";
+import PythonAccess_button from "./PythonAccess_button.jsx";
+import forgeRequest from "../../hooks/ReqHandler/forgeRequest.js";
+import handleErrorByStatus from "../../hooks/handleErrorByStatus.js";
 
 function PythonAccess(props){
     const windowControler = useWindowControl();

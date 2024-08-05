@@ -1,4 +1,4 @@
-import handleErrorByStatus from "../hooks/GLOBAL/handleErrorByStatus"
+import handleErrorByStatus from "../hooks/handleErrorByStatus.js"
 
 export default function ErrorMessage(props){
 

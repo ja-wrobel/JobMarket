@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 let isMenuOnScreen = false;
+
 /**
  * Controls Menu's appearance on screen
  * @returns {string} `'show'` || `''`

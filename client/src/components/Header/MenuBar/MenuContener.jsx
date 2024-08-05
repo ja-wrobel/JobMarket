@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
-import "../css/Menu.css";
-import useMenuControl from "../hooks/menuControl";
-import MenuContener_button from "./buttons/MenuContener_button";
-import validateString from "../hooks/validateString";
+import "./Menu.css";
+import useMenuControl from "../../../hooks/Header/menuControl.js";
+import MenuContener_button from "./MenuContener_button.jsx";
+import validateString from "../../../hooks/validateString.js";
 
 export default function MenuContener(){
 

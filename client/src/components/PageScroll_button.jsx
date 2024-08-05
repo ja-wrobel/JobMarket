@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import "../../css/Page_up_down.css";
+import "../css/PageScroll_button.css";
 
-export default function Page_up_down(){
+export default function PageScroll_Button(){
     const [isDirectionUp, setIsDirectionUp] = useState(false);
     let scroll_position;
 

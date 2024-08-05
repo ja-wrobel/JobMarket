@@ -1,10 +1,10 @@
 import React from 'react';
-import "../css/Header.css";
-import useScrollDirection from "../hooks/scrollDirection";
-import MenuContener from './MenuContener';
-import SearchInput from './inputs/SearchInput';
+import "./Header.css";
+import useScrollDirection from "../../hooks/Header/scrollDirection.js";
+import MenuContener from './MenuBar/MenuContener.jsx';
+import SearchInput from './SearchInput.jsx';
 import { useNavigate } from 'react-router-dom';
-import closeInfoTab from '../hooks/closeInfoTab';
+import closeInfoTab from '../../hooks/closeInfoTab.js';
 
 function Header() {
     const scrollDirection = useScrollDirection();

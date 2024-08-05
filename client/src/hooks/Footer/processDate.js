@@ -1,4 +1,4 @@
-import correctDate from "../correctDate";
+import correctDate from "./correctDate";
 let isFirstTypeChecked = false;
 let final_date_as_string, oldest_DHMS;
 
