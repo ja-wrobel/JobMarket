@@ -1,4 +1,4 @@
-const cryptoControl = require('./cryptoController');
+const cryptoControl = require('./cryptoController.js');
 
 class tokenControl extends cryptoControl{
     client_id = tokenControl.generateObjectId(16,20);

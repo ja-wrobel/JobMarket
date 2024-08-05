@@ -1,4 +1,4 @@
-const {cryptoControl} = require('./tokenController');
+const {cryptoControl} = require('../../Controllers/authMiddleware/tokenController.js');
 
 module.exports = function (client, db, options){
     return async function secureXSRF(req, res, next){

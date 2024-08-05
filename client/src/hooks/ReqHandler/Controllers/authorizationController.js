@@ -68,7 +68,7 @@ class authorizationControl extends cryptoControl{
     setToken(token){
         this.token = token;
     }
-    /** Sets to `date` + 10 seconds @param {Date} date */
+    /** Sets to `date` + x seconds @param {Date} date */
     setExpirationDate(date){
         this.expiration_date = new Date(date.setSeconds( date.getSeconds() + this.#token_lifespan ) );
     }
@@ -141,7 +141,7 @@ class authorizationControl extends cryptoControl{
     }
 
     /**
-     * Waits with next step of request until user is authorized thanks to recursion
+     * Waits with next step of request until user is authorized by recursion
      * @param {authorizationControl} user 
      * @param {string} route 
      * @param {number} recurse_count default = 0. Incremented with each recursion, if it goes up to 50 - returns user immediately even if undefined

@@ -1,3 +1,4 @@
+// NPM packages imports
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -7,12 +8,18 @@ const path = require('path');
 const helmet = require('helmet');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
+//
+
+// ENV variables
 const env_var = {
     db_uri: process.env.URI_DATABASE,
     port: process.env.PORT || 8080,
     this_url: process.env.URL || "http://localhost",
     client_url: process.env.CLIENT_URL
 }
+//
+
+// MONGO setup
 const client = new MongoClient(env_var.db_uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -21,6 +28,9 @@ const client = new MongoClient(env_var.db_uri, {
     }
 });
 const db = client.db("offerData");
+//
+
+// RateLimiter setup (anti DDOS)
 const rateLimiter = new RateLimiterMemory({
     points: 41,
     duration: 1.5
@@ -30,7 +40,6 @@ const longTermRateLimit = new RateLimiterMemory({
     duration: 90,
     blockDuration: 60*60
 });
-
 const rateLimiterMiddleware = (req, res, next) => {
     longTermRateLimit.consume(req.ip, 2)
     .then(()=>{
@@ -47,6 +56,9 @@ const rateLimiterMiddleware = (req, res, next) => {
         res.status(429).send('Way Too Many Requests, try again later...');
     });
 };
+//
+
+// CORS setup
 whitelist = env_var.client_url;
 const corsOptions = {
     origin: function (origin, callback) {
@@ -61,12 +73,11 @@ function setCorsHeaders(req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, XSRF-Token, U_id');
     next();
-  }
+}
+//
 
-//
-//
-const secureXSRF = require("./functions/global/secureXSRF.js");
-const {tokenControl} = require("./functions/global/tokenController.js");
+// Middleware
+const secureXSRF = require("./Middleware/auth/secureXSRF.js");
 
 app.use(cors(corsOptions));
 app.use(setCorsHeaders);
@@ -77,15 +88,22 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
+//
 
+// RUN SERVER
 const server = app.listen(env_var.port, async ()=>{
     console.log(`Server is running at ${env_var.this_url}:${env_var.port}`);
     console.log(new Date());
 })
 server.maxHeadersCount = 0; // Websocket vulnerability workaround. Could be repaired by puppeteer update as well, 
                             // but in new puppeteer version xpath is not supported, so I would need to rewrite scraping.
+//
+
+// ROUTES
 
 /* AUTHORIZE */
+const {tokenControl} = require("./Controllers/authMiddleware/tokenController.js");
+
 router.get('/auth', async (req, res) => {
     let error = false;
     const user = new tokenControl( req, res, db.collection('auth') );
@@ -184,8 +202,8 @@ router.get('/upd_time/', async(req, res)=>{
 
 
 /* ---------SEARCH FOR NEW ENTRIES USING PYTHON SCRIPT -------------------*/
-const searchForOffers = require("./functions/search_for_off/searchForOffers.js");
-const isReqBodyOk = require('./functions/search_for_off/isReqBodyOk.js');
+const searchForOffers = require("./Handlers/search_for_off/searchForOffers.js");
+const isReqBodyOk = require('./Handlers/search_for_off/isReqBodyOk.js');
 
 router.post('/search_for_off', async (req, res)=>{
     const isReqSafe = isReqBodyOk(req.body.specs);
@@ -214,8 +232,8 @@ router.post('/search_for_off', async (req, res)=>{
 
 
 /* -----------------PUPPETEER - SCRAPE DATA FROM WIKIPEDIA----------------------- */
-const scrapeWikipedia = require("./functions/more_info/scrapeWikipedia.js");
-const isReqParamOk = require("./functions/more_info/isReqParamOk.js"); // <- TODO <- // 
+const scrapeWikipedia = require("./Handlers/more_info/scrapeWikipedia.js");
+const isReqParamOk = require("./Handlers/more_info/isReqParamOk.js"); // <- TODO <- // 
 
 router.get('/more_info/:key', async(req, res)=>{ 
     longTermRateLimit.consume(req.ip, 40)

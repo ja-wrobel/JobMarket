@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import React from 'react'
 import "./Footer.css";
-import '../index.css';
+import '../../index.css';
 import FooterText from "./FooterText.jsx";
 import processDate from "../../hooks/Footer/processDate.js";
 import forgeRequest from "../../hooks/ReqHandler/forgeRequest.js";
