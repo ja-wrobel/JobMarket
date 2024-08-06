@@ -6,12 +6,20 @@ class cryptoControl{
 
     #AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
     #AUTH_KEY = import.meta.env.VITE_AUTH_TOKEN_KEY;
-
+    /**
+     * @param {number} iterations `1000` on server
+     * @param {number} salt_len `64`
+     * @param {number} iv_len `16`
+     */
     constructor(iterations, salt_len, iv_len){
         this.ITERATIONS = Number(iterations);
         this.SALT_LENGTH = Number(salt_len);
         this.IV_LENGTH = Number(iv_len);
     }
+    /**
+     * @param {number|string} data date in milliseconds
+     * @returns {string} 
+     */
     encrypt(data){
         data = this.#AUTH_TOKEN.concat(data);
         const iv = crypto.randomBytes(this.IV_LENGTH);

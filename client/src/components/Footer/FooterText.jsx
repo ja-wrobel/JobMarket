@@ -10,14 +10,12 @@ export default function FooterText(props){
         this_component.style.bottom = `${(footer_height+10)}px`;
         if(boolArr.backend === false || boolArr.frontend === false || boolArr.fullstack === false || boolArr.gamedev === false){
             exp.root2.render(
-                //<React.StrictMode>
-                    <PythonAccess 
-                        backend={boolArr.backend} 
-                        frontend={boolArr.frontend} 
-                        fullstack={boolArr.fullstack} 
-                        gamedev={boolArr.gamedev}
-                    />
-                //</React.StrictMode>
+                <PythonAccess 
+                    backend={boolArr.backend} 
+                    frontend={boolArr.frontend} 
+                    fullstack={boolArr.fullstack} 
+                    gamedev={boolArr.gamedev}
+                />
             );
         }
     }, [boolArr])

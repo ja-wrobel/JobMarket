@@ -6,7 +6,12 @@ class cryptoControl{
 
     #AUTH_KEY = process.env.AUTH_TOKEN_KEY;
     #SERVER_KEY = process.env.AUTH_SERVER_KEY;
-
+    /**
+     * 
+     * @param {number} iterations `1000` in client
+     * @param {number} salt_len `64`
+     * @param {number} iv_len `16`
+     */
     constructor(iterations, salt_len, iv_len){
         this.ITERATIONS = Number(iterations);
         this.SALT_LENGTH = Number(salt_len);
@@ -25,6 +30,11 @@ class cryptoControl{
         return Buffer.concat([salt, iv, tag, encrypted]).toString('hex');
     }
 
+    /**
+     * @param {string} encryptedData encrypted token
+     * @param {boolean} isAuthRT has to be set as `true` when decrypting token is sent with `/auth` request, doesn't have to be defined with other requests
+     * @returns {Buffer} decrypted token
+     */
     decrypt(encryptedData, isAuthRT){
         let encryption_key = this.#SERVER_KEY;
         if(isAuthRT){
@@ -45,6 +55,11 @@ class cryptoControl{
         return decrypted;
     }
 
+    /**
+     * Checks if date sent with `/auth` request token is younger than 3 seconds
+     * @param {string} token token from `/auth` request
+     * @returns {boolean} `true` === valid
+     */
     isAuthTokenValid(token){
         const date = new Date().getTime();
         token = this.decrypt(token, true);

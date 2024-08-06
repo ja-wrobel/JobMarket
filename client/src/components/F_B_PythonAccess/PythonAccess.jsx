@@ -59,7 +59,6 @@ function PythonAccess(props){
                 break;
             }
         }
-        warning.style.fontSize = 'larger';
     }
 
     return (

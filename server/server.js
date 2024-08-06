@@ -71,7 +71,7 @@ const corsOptions = {
 }
 function setCorsHeaders(req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, XSRF-Token, U_id');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Access-Control-Request-Methods, Content-Type, Xsrf-Token, U_id');
     next();
 }
 //
@@ -233,9 +233,13 @@ router.post('/search_for_off', async (req, res)=>{
 
 /* -----------------PUPPETEER - SCRAPE DATA FROM WIKIPEDIA----------------------- */
 const scrapeWikipedia = require("./Handlers/more_info/scrapeWikipedia.js");
-const isReqParamOk = require("./Handlers/more_info/isReqParamOk.js"); // <- TODO <- // 
+const isReqParamOk = require("./Handlers/more_info/isReqParamOk.js"); 
 
 router.get('/more_info/:key', async(req, res)=>{ 
+
+    const isParamOk = await isReqParamOk(req, client);
+    if( !isParamOk ) return res.status(404).end();
+
     longTermRateLimit.consume(req.ip, 40)
     .then(()=>{
         rateLimiter.consume(req.ip, 20) 

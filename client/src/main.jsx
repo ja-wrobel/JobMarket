@@ -8,17 +8,14 @@ import { BrowserRouter } from 'react-router-dom';
 const sRoot = ReactDOM.createRoot(document.getElementById('pyAccess'));
 const root = ReactDOM.createRoot(document.getElementById('main'));
 const exp = {
-  root1: root,
-  root2: sRoot
+    root1: root,
+    root2: sRoot
 }
 root.render(
-    //<React.StrictMode>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    //</React.StrictMode>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
 )
-sRoot.render()
 
 
 
