@@ -9,12 +9,11 @@ import finalizeRequest from "./finalizeRequest";
  * @param {string} route ex. `/` || `/some_route/${variable}`
  * @param {string} METHOD like `POST` etc
  * @param {object|undefined} body_content = {foo: 'foo2'}
- * @returns {JSON|number|Response} 
+ * @returns {JSON|number} 
  * - `response.json();`
  * - IF (`response.ok === false`){
  * - `response.status`
  * - }
- * - just a Response for `POST` method and alike
  */ 
 export default async function forgeRequest(route, METHOD, body_content){
 

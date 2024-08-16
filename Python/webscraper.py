@@ -54,7 +54,6 @@ def browser_setting(spec):
     browser.get("https://pracuj.pl/")
     browser.add_cookie(cookie3)
     url_arg = f'https://it.pracuj.pl/praca?et=17%2C1&its={spec}'
-    print(url_arg)
     browser.get(url_arg)
     browser.add_cookie(cookie1)
     browser.add_cookie(cookie2)
@@ -65,12 +64,11 @@ def main(techArr, IDArr, position):
         offersArr = browser.find_elements(By.XPATH, '//*//div[@data-test="default-offer"]')
         for i, e in enumerate(offersArr):
             att = e.get_attribute("data-test-offerid")
-            print('------------\n')
             IDArr[i].append(att)
-            print(f'ID: {att} added succesfully\n')
             lookForTechnologies(att, i, techArr)
     except NoSuchElementException:
-        pass
+        print("404")
+        exit()
     finally:
         length = len(db.lastUpdateTime.find({"type": position}).distinct("_id"))
         db.lastUpdateTime.insert_one({"date": datetime.datetime.now(tz=datetime.timezone.utc), "_id": length+1, "type": position})
@@ -89,10 +87,7 @@ def lookForTechnologies(id, index, arr):
         data = e.get_attribute("innerHTML")
         arr[index].append(data)
     if not result:
-        arr[index].append('not given')
-        print('No Technologies found\n')
-    else:
-        print('Technologies added succesfully\n')
+        arr[index].append('-')
 
 flag = False
 "This flag controls for loop's behaviour, checks whether ID or TECH already exists in array"
@@ -112,7 +107,16 @@ def count(techArr, techCount):
     for k, v in techArr.items():
         for e in v:
             techCount[e] += 1
-    print(techCount)
+
+def printAsJSON(techCount, IDArr):
+    i = 0
+    length = len(techCount)
+    for k, v in techCount.items():
+        if ( i + 1 ) != length:
+            print(f'\u007b"_id":"{IDArr[i][0]}","name":"{k}","value":"{v}"\u007d,')
+        else:
+            print(f'\u007b"_id":"{IDArr[i][0]}","name":"{k}","value":"{v}"\u007d')
+        i += 1
 
 def addTechs(spec, techCount):
     for k, v in techCount.items():
@@ -126,7 +130,7 @@ def addTechs(spec, techCount):
                 db[spec].update_one({"name": k}, {"$set": {"value": summary}})
                 flag = True
                 break
-            elif k == "not given":
+            elif k == "-":
                 flag = True
                 break
         if flag == False:
@@ -135,6 +139,7 @@ def addTechs(spec, techCount):
 "---------------EXECUTION----------------"
 
 if url_flag == False:
+    i = 0
     for v in specs_arr:
         flag = True
         browser_setting(v)
@@ -144,14 +149,25 @@ if url_flag == False:
         main(techArr, IDArr, v)
         add_new_id(IDArr, techArr)
         count(techArr, techCount)
+        if i == 0:
+            print(f'\u007b "{v}": [')
+        else:
+            print(f']\u007d, \u007b "{v}": [')
+        printAsJSON(techCount, IDArr)
+        
         addTechs("langsCount", techCount)
         addTechs(v, techCount)
+        i += 1
+    print("]\u007d")
     exit()
 else:
     browser_setting(position)
     main(technologiesArr, idArr, position)
     add_new_id(idArr, technologiesArr)
     count(technologiesArr, technologiesCount)
+    
+    printAsJSON(technologiesCount, idArr)
+    
     addTechs("langsCount", technologiesCount)
     addTechs(position, technologiesCount)
     exit()

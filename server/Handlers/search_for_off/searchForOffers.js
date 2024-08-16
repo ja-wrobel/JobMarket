@@ -5,6 +5,7 @@ const position_types = ["backend", "frontend", "fullstack", "gamedev"];
 
 async function searchForOffers(position, response, req_ip, db){
     let error = false;
+    let resp = "";
     try{
         if(position === undefined){
             return response.status(404).end();
@@ -49,7 +50,7 @@ async function searchForOffers(position, response, req_ip, db){
         const find_ip = await db.db("offerData").collection('searchCount').find({"meta._ip": req_ip}).toArray();
         let search_count_status = find_ip[0].meta.search_count;
         if(search_count_status >= 4){
-            console.log(`This client ${req_ip} sent too many requests...`);
+            console.log(`${req_ip} sent too many requests...`);
             return await response.status(429).end("Too Many Requests");
         }
 
@@ -62,10 +63,19 @@ async function searchForOffers(position, response, req_ip, db){
             error = true;
         }finally{
             if(error) return response.status(404).end();
-
+            
+            let message_log;
             await py.PythonShell.run('webscraper.py', options).then(messages=>{
-                console.log(messages.toString());
+                message_log = messages;
             });
+            if(message_log == '404') return response.status(404).end();
+
+            for( const e of message_log ){
+                resp += e;
+            }
+            resp = "[" + resp + "]";
+            resp = JSON.parse(resp);
+            console.log(resp);
         }
         
     }catch(e){
@@ -74,7 +84,7 @@ async function searchForOffers(position, response, req_ip, db){
     }finally{
         if(error) return response.status(404).end();
         
-        return response.status(200).end();
+        return response.status(200).send(resp);
     };   
 }
 

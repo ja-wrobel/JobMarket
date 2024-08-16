@@ -4,8 +4,8 @@ export default function ErrorMessage(props){
 
     return(
         <>
-        <p style={{fontSize: '1.5rem', marginBottom: '10rem'}}>HTTP ERROR {props.status}
-            {handleErrorByStatus(props.status)}
+        <p style={{fontSize: '1.5rem', marginBottom: '10rem'}}>
+            HTTP ERROR {handleErrorByStatus(props.status)}
         </p>
         <p>
         {

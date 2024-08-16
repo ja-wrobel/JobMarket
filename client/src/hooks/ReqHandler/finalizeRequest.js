@@ -5,7 +5,7 @@
  * @param {object|undefined} body_content 
  * @param {string} uri 
  * @param {string} port 
- * @returns {JSON|number|Response} `JSON` for `GET`, `number` = `response.status` in case of error, `Response` for methods like `POST`
+ * @returns {JSON|number} `number` = `response.status` in case of error
  */
 export default async function finalizeRequest(userAuthenticated, METHOD, body_content, uri, port){
     if(localStorage.getItem('auth_in_progress')){
@@ -28,13 +28,11 @@ export default async function finalizeRequest(userAuthenticated, METHOD, body_co
     .then( response => {
         if(!response.ok) {
             if(response.status === 401) localStorage.clear(); // so even if something went wrong, user can get fine response after refresh
+            
             return response.status;
         }
 
         if(response.status === 200){
-            if(METHOD === 'POST' || METHOD === 'DELETE' || METHOD === 'PUT'){
-                return response;
-            }
             return response.json();
         }
 

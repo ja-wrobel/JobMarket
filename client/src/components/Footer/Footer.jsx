@@ -21,7 +21,7 @@ function Footer(){
         const data_length = data.length;
         // handle error
         if(typeof data === 'number'){
-            setContent(`(HTTP Error${ handleErrorByStatus(data) })`);
+            setContent(`(HTTP Error ${ handleErrorByStatus(data) })`);
             setIsTypeUpdated({backend: true, frontend: true, fullstack: true, gamedev: true});
             setIsUpdated(true);
             return [content, isTypeUpdated, isUpdated];

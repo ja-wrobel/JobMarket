@@ -153,11 +153,12 @@ src: url("/MayaCulpa.ttf");
     text-align: center;
     color: rgb(201, 242, 255);
 }
-.PyAccessForm{
+.PyAccessDiv{
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 #PyAccess-close{
     margin: 0 0;

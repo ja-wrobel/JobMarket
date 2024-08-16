@@ -1,0 +1,13 @@
+#PyAccess-result{
+    overflow: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    margin-bottom: 5px;
+    padding: 0 5px;
+    border: 00.25px solid rgb(35, 112, 255, 0.8);
+    border-top: 0;
+    border-radius: 10px;
+    background-color: rgb(30, 60, 131, 0.3);
+    filter: drop-shadow(0 0 4px black);
+    width: 20rem;
+}
