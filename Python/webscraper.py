@@ -17,9 +17,7 @@ uri = os.environ['URI_DATABASE']
 server_url = os.environ['SERVER_URL']
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.offerData
-"""
-"--------------NOTES---------------"
-"""
+
 "--------------COOKIES-----------"
 
 cookie1 = {'name' : "gpc_v",'value' : "1"}
@@ -112,10 +110,11 @@ def printAsJSON(techCount, IDArr):
     i = 0
     length = len(techCount)
     for k, v in techCount.items():
+        ReactKey = IDArr[0][0]+str(i)
         if ( i + 1 ) != length:
-            print(f'\u007b"_id":"{IDArr[i][0]}","name":"{k}","value":"{v}"\u007d,')
+            print(f'\u007b"_id":"{ReactKey}","name":"{k}","value":"{v}"\u007d,')
         else:
-            print(f'\u007b"_id":"{IDArr[i][0]}","name":"{k}","value":"{v}"\u007d')
+            print(f'\u007b"_id":"{ReactKey}","name":"{k}","value":"{v}"\u007d')
         i += 1
 
 def addTechs(spec, techCount):

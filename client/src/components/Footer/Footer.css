@@ -1,42 +1,43 @@
 @font-face {
-font-family: FreedomFont;
-src: url("/FreedomFont.ttf");
+    font-family: FreedomFont;
+    src: url("/FreedomFont.ttf");
 }
 @font-face {
-font-family: AstroSpace;
-src: url("/AstroSpace.ttf");
+    font-family: AstroSpace;
+    src: url("/AstroSpace.ttf");
 }
 @font-face {
-font-family: MayaCulpa;
-src: url("/MayaCulpa.ttf");
+    font-family: MayaCulpa;
+    src: url("/MayaCulpa.ttf");
 }
 
 .Footer{
-position: fixed;
-left: 0;
-bottom: 0;
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: rgba(0, 20, 55, 0.75);
-background-image: linear-gradient(to right, rgba(0, 40, 90, 0.50), rgba(0, 20, 55, 0.70), rgba(0, 73, 82, 0.50));
-color: rgb(20, 190, 240);
-border-top: 1px solid rgb(35, 112, 255, 0.6);
-text-align: center;
-font-style: italic;
-max-height: fit-content;
-min-height: 2rem;
-filter: drop-shadow(0px -2px 4px black);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 20, 55, 0.75);
+    background-image: linear-gradient(to right, rgba(0, 40, 90, 0.50), rgba(0, 20, 55, 0.70), rgba(0, 73, 82, 0.50));
+    color: rgb(20, 190, 240);
+    border-top: 1px solid rgb(35, 112, 255, 0.6);
+    text-align: center;
+    font-style: italic;
+    max-height: fit-content;
+    min-height: 2rem;
+    filter: drop-shadow(0px -2px 4px black);
+    z-index: 2;
 }
 footer{
-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 #PyAccess-footer-btn{
-font-size: medium;
-margin: 0 1vmax;
-padding: 2px 2rem;
-font-weight: normal;
+    font-size: medium;
+    margin: 0 1vmax;
+    padding: 2px 2rem;
+    font-weight: normal;
 }
 
 /* --------------MEDIA ONLY------------------ */

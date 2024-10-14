@@ -1,6 +1,9 @@
 import "./PyAccessResult.css";
 
-export default function PythonAccessResult(props){
+export default function PythonAccessResult(props){ 
+    props.result.sort((a,b) => a.value - b.value);
+    props.result.reverse();
+
     const result = props.result;
     return (
         <>
@@ -8,7 +11,7 @@ export default function PythonAccessResult(props){
                 <h3 style={{margin: '1rem'}}>New entries:</h3>
             </div>
             <div id="PyAccess-result">
-                <ul>
+                <ul style={{margin: '10px 0'}}>
                     {result[0] === undefined || result[0].backend === undefined 
                     ?
                     result.map( (prop) => {

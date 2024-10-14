@@ -12,7 +12,7 @@
     border: 1px solid rgba(35, 112, 255, 0.605);
     border-radius: 10px;
     display: none;
-    z-index: 50;
+    z-index: 1;
 }
 #info_tab_title{
     font-size: x-large;

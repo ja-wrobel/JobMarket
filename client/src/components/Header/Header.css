@@ -77,144 +77,144 @@
     transition: 0.35s all;
 }
 #menu-btn span{
-  height: 2.5px;
-  width: 25px;
-  background: rgb(0, 17, 55);
-  box-shadow: 0 0 15px 0px black;;
-  display: block;
-  margin-top: 3px;
+    height: 2.5px;
+    width: 25px;
+    background: rgb(0, 17, 55);
+    box-shadow: 0 0 15px 0px black;;
+    display: block;
+    margin-top: 3px;
 }
 #menu-btn:hover{
-  background-color: rgba(70, 135, 176, 0.414);
-  border-color: rgb(202, 229, 238);
+    background-color: rgba(70, 135, 176, 0.414);
+    border-color: rgb(202, 229, 238);
 }
 #search-icon{
-  position: absolute;
-  right: 0;
-  top: 1.5rem;
-  margin-right: 25px;
-  cursor: pointer;
-  user-select: none;
+    position: absolute;
+    right: 0;
+    top: 1.5rem;
+    margin-right: 25px;
+    cursor: pointer;
+    user-select: none;
 }
 #search-message{
-  display: none;
-  position: absolute;
-  right: 10px;
-  top: 5rem;
-  font-size: small;
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 5rem;
+    font-size: small;
 }
 .icon.search{
-  width: 25px;
-  height: 25px;
-  border: 2px solid;
-  border-radius: 100%;
+    width: 25px;
+    height: 25px;
+    border: 2px solid;
+    border-radius: 100%;
 }
 .icon.search:hover{
-  border: 2px solid blue;
+    border: 2px solid blue;
 }
 
 /* --------------MEDIA ONLY------------------ */
 @media only screen and (max-width: 300px){
-  #header-h1{
-    font-size: 0.8em;
-  }
-  #header-h5{
-    font-size: 0.3em;
-  }
-  #header-menu{
-    padding-left: 5px;
-  }
-  #menu-btn{
-    width: 40px;
+    #header-h1{
+        font-size: 0.8em;
+    }
+    #header-h5{
+        font-size: 0.3em;
+    }
+    #header-menu{
+        padding-left: 5px;
+    }
+    #menu-btn{
+        width: 40px;
 
-  }
+    }
 }
 @media only screen and (max-width: 350px){
-  #header-h1{
-    font-size: 0.9em;
-  }
-  #header-h5{
-    font-size: 0.4em;
-  }
+    #header-h1{
+        font-size: 0.9em;
+    }
+    #header-h5{
+        font-size: 0.4em;
+    }
 }
 @media only screen and (min-width: 350px){
-  #header-h1{
-    font-size: 1.2em;
-  }
-  #header-h5{
-    font-size: 0.5em;
-  }
+    #header-h1{
+        font-size: 1.2em;
+    }
+    #header-h5{
+        font-size: 0.5em;
+    }
 }
 @media only screen and (min-width: 440px){
-  #header-h1{
-    font-size: 0.8em;
-  }
-  #header-h5{
-    font-size: 0.4em;
-  }
+    #header-h1{
+        font-size: 0.8em;
+    }
+    #header-h5{
+        font-size: 0.4em;
+    }
 }
 @media only screen and (min-width: 600px){
-  #header-h1{
-    font-size: 1.2em;
-  }
-  #header-h5{
-    font-size: 0.5em;
-  }
+    #header-h1{
+        font-size: 1.2em;
+    }
+    #header-h5{
+        font-size: 0.5em;
+    }
 
 }
 @media only screen and (min-width: 768px){
-  #header-h1{
-    font-size: 1.5em;
-  }
-  #header-h5{
-    font-size: 0.6em;
-  }
-}
-@media only screen and (min-width: 992px){
-  #header-h1{
-    font-size: 1.75em;
-  }
-  #header-h5{
-    font-size: 0.7em;
-  }
+    #header-h1{
+        font-size: 1.5em;
+    }
+    #header-h5{
+        font-size: 0.6em;
+    }
+    }
+    @media only screen and (min-width: 992px){
+    #header-h1{
+        font-size: 1.75em;
+    }
+    #header-h5{
+        font-size: 0.7em;
+    }
 }
 @media only screen and (min-width: 1200px){
-  #header-h1{
-    font-size: 1.9em;
-  }
-  #header-menu{
-    padding-left: 3rem;
-    padding-right: 1rem;
-  }
-  #menu-btn{
-    width: 55px;
-    height: 35px;
-  }
-  #menu-btn span{
-    height: 3px;
-    width: 35px;
-  }
+    #header-h1{
+        font-size: 1.9em;
+    }
+    #header-menu{
+        padding-left: 3rem;
+        padding-right: 1rem;
+    }
+    #menu-btn{
+        width: 55px;
+        height: 35px;
+    }
+    #menu-btn span{
+        height: 3px;
+        width: 35px;
+    }
 }
 @media only screen and (min-width: 1920px){
-  #header-h1{
-    font-size: 2.5em;
-  }
-  #header-h5{
-    font-size: 0.9em;
-  }
-  .header{
-    height: 6rem;
-  }
-  .header.down{
-    top: -6rem;
-  }
-  #menu-btn{
-    width: 70px;
-    height: 50px;
-  }
-  #menu-btn span{
-    height: 3.5px;
-    width: 40px;
-    margin-top: 4px;
-  }
+    #header-h1{
+        font-size: 2.5em;
+    }
+    #header-h5{
+        font-size: 0.9em;
+    }
+    .header{
+        height: 6rem;
+    }
+    .header.down{
+        top: -6rem;
+    }
+    #menu-btn{
+        width: 70px;
+        height: 50px;
+    }
+    #menu-btn span{
+        height: 3.5px;
+        width: 40px;
+        margin-top: 4px;
+    }
 }
