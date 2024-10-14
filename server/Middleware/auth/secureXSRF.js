@@ -6,6 +6,7 @@ module.exports = function (client, db, options){
         let is_path_auth = req.path.match('\/auth');
         let valid_token;
         let received_token;
+        let received_date;
         let exp_date;
         const new_date = new Date();
         const crypt = new cryptoControl(1000, 64, 16);
@@ -17,10 +18,10 @@ module.exports = function (client, db, options){
             }
 
             try{
-                received_token = crypt.isAuthTokenValid( req.header('Xsrf-Token') );
+                received_token = crypt.isAuthTokenValid(req.header('Xsrf-Token'));
             }
             catch(e){
-                console.log(`Error while decrypting for: ${req.ip}\nError: ${e}`);
+                console.log(`Error while decrypting for: ${req.ip}\n${e}`);
                 error = true;
             }
             finally{
@@ -39,7 +40,17 @@ module.exports = function (client, db, options){
             if(valid_token.length > 0){
                 exp_date = new Date(valid_token[0].token._updated_at.setSeconds(valid_token[0].token._updated_at.getSeconds() + 25));
             }
-            received_token = crypt.decrypt( req.header('Xsrf-Token') ).toString();
+
+            const encrypted_token = req.header('Xsrf-Token');
+            received_date = encrypted_token.substring(
+                (encrypted_token.length - 218),
+                encrypted_token.length
+            );
+
+            received_date = Number(crypt.decrypt(received_date, true));
+            received_token = crypt.decrypt(
+                encrypted_token.substring(0, (encrypted_token.length - 218))
+            ).toString();
         }
         catch(e){
             console.log(`XSRF Error: \n${e}`);
@@ -52,7 +63,7 @@ module.exports = function (client, db, options){
                 console.log(`User not found: ${req.ip}`);
                 return res.sendStatus(401);
             }
-            else if( exp_date.getTime() < new_date.getTime() ){
+            else if( exp_date.getTime() < new_date.getTime() || new_date.getTime() < received_date || new_date.getTime() >= (received_date+3000)){
                 console.log(`Token expired: ${req.ip}`);
                 return res.sendStatus(401);
             }

@@ -20,8 +20,10 @@ class cryptoControl{
      * @param {number|string} data date in milliseconds
      * @returns {string} 
      */
-    encrypt(data){
-        data = this.#AUTH_TOKEN.concat(data);
+    encrypt(data, isAuth){
+        if(isAuth){
+            data = this.#AUTH_TOKEN.concat(data);
+        }
         const iv = crypto.randomBytes(this.IV_LENGTH);
         const salt = crypto.randomBytes(this.SALT_LENGTH);
         const key = crypto.pbkdf2Sync( this.#AUTH_KEY, salt, Number(this.ITERATIONS), Number(this.#KEY_LENGTH), 'sha512' );
@@ -29,7 +31,7 @@ class cryptoControl{
         const cipher = crypto.createCipheriv(this.#ALGORITHM, key, iv);
         const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
         const tag = cipher.getAuthTag();
-    
+        
         return Buffer.concat([salt, iv, tag, encrypted]).toString('hex');
     }
 

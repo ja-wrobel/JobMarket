@@ -19,6 +19,7 @@ class authorizationControl extends cryptoControl{
      * @method setLocalData()
      * @method clearLocalData()
      * @method getUserExpirationDate()
+     * @method concatDate() combines active token with encrypted new Date() in milliseconds
      * @method isValid() checks if `localStorage` and `this` is set properly in order to make a request
      * @static @method waitForAuthorization()
      */
@@ -59,6 +60,14 @@ class authorizationControl extends cryptoControl{
         localStorage.removeItem('token');
         localStorage.removeItem('expire_at');
         localStorage.removeItem('user_created_at');
+    }
+    concatDate(){
+        let token = this.getToken().concat(
+            this.encrypt(
+                new Date().getTime().toString()
+            )  
+        );
+        this.setToken(token);
     }
 
     // setters

@@ -14,7 +14,7 @@ export default async function authorizeRequest(uri, port, route, userAuthenticat
     }
     let token = new Date().getTime();
     const crypt = new cryptoControl(1000, 64, 16);
-    token = crypt.encrypt(token);
+    token = crypt.encrypt(token, true);
 
     localStorage.setItem('auth_in_progress', 'true');
 

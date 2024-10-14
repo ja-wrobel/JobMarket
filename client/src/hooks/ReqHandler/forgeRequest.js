@@ -36,6 +36,7 @@ export default async function forgeRequest(route, METHOD, body_content){
             return 404;
         }
         userAuthenticated.merge(user);
+        userAuthenticated.concatDate();
         return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
     }
     else if(userAuthenticated.getID() !== '' && localStorage.getItem('auth_in_progress') !== 'done' && !isActive){
@@ -45,9 +46,11 @@ export default async function forgeRequest(route, METHOD, body_content){
             return 404;
         }
         userAuthenticated.merge(user);
+        userAuthenticated.concatDate();
         return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
     }
     else{
+        userAuthenticated.concatDate();
         return await finalizeRequest(userAuthenticated, METHOD, body_content, uri, port);
     }
 
